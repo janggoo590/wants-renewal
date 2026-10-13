@@ -62,9 +62,10 @@ input, textarea, select { font: inherit; }
 /* ---------- Common : Buttons ---------- */
 .btn-line {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  height: 50px; padding: 0 24px;
+  height: 50px; padding: 0 30px;
   border: 1.5px solid currentColor; border-radius: 50px;
-  font-size: 17px; font-weight: 700;
+  font-size: 17px; font-weight: 700; line-height: 1;
+  padding-bottom: 2px; /* Noto Sans KR 글리프가 아래로 치우쳐 보이는 것 보정 */
   transition: background .3s, color .3s, border-color .3s;
 }
 .btn-line.white { color: #fff; }
@@ -93,7 +94,7 @@ input, textarea, select { font: inherit; }
 .logo .logo-sub { font-size: 8px; font-weight: 700; letter-spacing: .25em; padding-bottom: 8px; }
 .logo .logo-main { font-size: 40px; font-weight: 900; font-style: italic; letter-spacing: -.04em; line-height: 1; }
 .gnb ul { display: flex; gap: 42px; }
-.gnb a { position: relative; color: #fff; font-size: 19px; font-weight: 700; letter-spacing: .01em; }
+.gnb a { position: relative; color: #fff; font-family: 'Inter', 'Noto Sans KR', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: .01em; }
 .gnb a::after {
   content: ''; position: absolute; left: 0; bottom: -6px;
   width: 0; height: 2px; background: var(--c-blue); transition: width .3s var(--ease);
@@ -116,27 +117,28 @@ input, textarea, select { font: inherit; }
 .main-hero {
   position: relative; display: flex; align-items: center;
   height: 100vh; min-height: 760px; max-height: 1000px;
-  background-color: var(--ph-1); /* TODO: background-image 교체 */
+  background-color: var(--ph-1);
+  background-image: url('../img/main_hero_bg.jpg');
   background-size: cover; background-position: center;
   color: #fff; overflow: hidden;
 }
-.main-hero .hero-visual {
-  /* 임시 오브젝트 영역 (시안의 큐브 이미지 자리) */
-  position: absolute; top: 18%; right: 21%;
-  width: 36%; max-width: 680px; aspect-ratio: 1 / 1;
-  background: var(--ph-2);
-}
-.main-hero .inner { position: relative; z-index: 1; padding-top: 60px; }
+.main-hero .inner { position: relative; z-index: 1; padding-top: 60px; transform: translateY(20%); }
 .hero-label { font-size: 19px; font-weight: 700; margin-bottom: 18px; }
-.hero-title { font-size: 70px; font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
-.hero-desc { margin-top: 26px; font-size: 19px; line-height: 1.65; color: rgba(255,255,255,.88); }
+.hero-title { font-size: 65px; font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
+.hero-desc { margin-top: 26px; font-size: 18px; line-height: 1.65; color: rgba(255,255,255,.88); }
 .hero-btns { display: flex; gap: 12px; margin-top: 36px; }
 .hero-btns .btn-line { min-width: 150px; }
 
 /* ---------- Section 2 : About ---------- */
-.main-about { position: relative; padding: 210px 0 220px; overflow: hidden; }
+.main-about {
+  position: relative; padding: 210px 0 220px;
+  background-color: #fff;
+  background-image: url('../img/main_about_bg.jpg');
+  background-size: cover; background-position: center;
+  overflow: hidden;
+}
 .main-about .about-visual {
-  /* 임시 오브젝트 영역 (시안의 3D 링 이미지 자리) */
+  /* 임시 오브젝트 영역 (시안의 3D 링 이미지 자리) - 배경 이미지가 있으면 JS가 숨김 */
   position: absolute; top: 110px; right: -80px;
   width: 640px; height: 800px; border-radius: 50%;
   background: var(--ph-3);
@@ -164,17 +166,19 @@ input, textarea, select { font: inherit; }
 /* ---------- Section 3 : Services ---------- */
 .main-service {
   position: relative; padding: 170px 0 190px;
-  background-color: var(--ph-1); /* TODO: background-image 교체 */
+  background-color: var(--ph-1);
+  background-image: url('../img/main_service_bg.jpg');
   background-size: cover; background-position: center;
   color: #fff; overflow: hidden;
 }
 .main-service .service-visual {
-  /* 임시 오브젝트 영역 (시안의 구체 이미지 자리) */
+  /* 임시 오브젝트 영역 (시안의 구체 이미지 자리) - 배경 이미지가 있으면 JS가 숨김 */
   position: absolute; top: 150px; right: 12%;
   width: 620px; aspect-ratio: 1 / 1; border-radius: 50%;
   background: var(--ph-2);
 }
 .main-service .inner { position: relative; z-index: 1; }
+.bg-loaded .ph-visual { display: none; }
 .main-service .sec-desc { color: #fff; margin-top: 24px; }
 .main-service .btn-fill { margin-top: 36px; }
 .service-list { display: grid; grid-template-columns: repeat(4, 240px); gap: 22px 21px; margin-top: 36px; }
@@ -193,7 +197,7 @@ input, textarea, select { font: inherit; }
 
 /* ---------- Section 4 : Portfolio ---------- */
 .main-portfolio { padding: 140px 0 100px; overflow: hidden; }
-.main-portfolio .btn-line { margin-top: 34px; height: 40px; padding: 0 26px; }
+.main-portfolio .btn-line { margin-top: 34px; height: 40px; padding: 0 26px 2px; }
 .pf-slider { position: relative; margin-top: 40px; }
 .pf-viewport { overflow: hidden; max-width: 1212px; margin: 0 auto; padding: 0 0 4px; }
 .pf-track { display: flex; gap: 23px; transition: transform .6s var(--ease); }
@@ -437,7 +441,7 @@ input, textarea, select { font: inherit; }
   .main-service .service-visual { right: -100px; }
 }
 @media (max-width: 1200px) {
-  .hero-title { font-size: 58px; }
+  .hero-title { font-size: 56px; }
   .sec-title { font-size: 46px; }
   .service-list { grid-template-columns: repeat(3, 1fr); max-width: 760px; }
   .content-wrap { flex-direction: column; max-width: 680px; }
@@ -460,7 +464,7 @@ input, textarea, select { font: inherit; }
   .gnb.open { opacity: 1; visibility: visible; }
   .gnb ul { flex-direction: column; align-items: center; gap: 34px; }
   .gnb a { font-size: 30px; }
-  .main-hero .hero-visual { right: -10%; width: 60%; opacity: .6; }
+  .main-hero { background-position: 62% center; }
   .main-about .about-visual { opacity: .35; }
   .split, .svc-detail, .contact-wrap { grid-template-columns: 1fr; gap: 40px; }
   .svc-detail:nth-child(even) .ph-box { order: 0; }
@@ -474,11 +478,12 @@ input, textarea, select { font: inherit; }
   .logo .logo-main { font-size: 32px; }
   .logo .logo-sub { display: none; }
   .main-hero { min-height: 640px; }
+  .main-hero::before { content: ''; position: absolute; inset: 0; background: rgba(0, 0, 0, .5); }
   .hero-label { font-size: 14px; }
   .hero-title { font-size: 38px; }
   .hero-desc { font-size: 15px; }
   .hero-desc br { display: none; }
-  .hero-btns .btn-line { min-width: 0; height: 44px; font-size: 15px; padding: 0 20px; }
+  .hero-btns .btn-line { min-width: 0; height: 44px; font-size: 15px; padding: 0 20px 2px; }
   .sec-label { font-size: 14px; }
   .sec-title, .sub-sec .sec-title { font-size: 30px; }
   .sec-desc { font-size: 15px; }
@@ -521,3 +526,56 @@ input, textarea, select { font: inherit; }
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }
+
+/* =========================================================
+   SCROLL INTERACTION (js/scroll.js 와 연동)
+   ========================================================= */
+
+/* Lenis 스무스 스크롤 기본 설정 */
+html.lenis, html.lenis body { height: auto; }
+main { overflow-x: clip; } /* 애니메이션 요소의 가로 넘침 방지 (body는 모바일에서 무시됨) */
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* 스크롤 진행 바 */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; z-index: 200;
+  width: 100%; height: 3px; background: var(--c-blue);
+  transform: scaleX(0); transform-origin: 0 50%; pointer-events: none;
+}
+
+/* 섹션 1 : 고정 후 다음 섹션이 덮으며 어두워짐 */
+.main-hero::after {
+  content: ''; position: absolute; inset: 0; z-index: 0;
+  background: #000; opacity: var(--dim, 0); pointer-events: none;
+}
+.main-hero ~ section { position: relative; z-index: 2; }
+
+/* 섹션 타이틀 줄 단위 마스크 */
+.sec-title .line { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+.sec-title .line-inner { display: inline-block; will-change: transform; }
+
+/* 포트폴리오 : PC에서는 스크롤로 가로 이동하므로 버튼 숨김 */
+.main-portfolio.is-scrub .pf-ctrl { display: none; }
+
+/* CTA 펼침 전환 */
+.gsap-on .main-cta { will-change: clip-path; }
+
+/* 커스텀 커서 (마우스 환경) */
+.cursor {
+  position: fixed; top: 0; left: 0; z-index: 300;
+  width: 14px; height: 14px; margin: -7px 0 0 -7px;
+  border-radius: 50%; background: #fff; mix-blend-mode: difference;
+  pointer-events: none; opacity: 0;
+  transition: opacity .3s, width .3s var(--ease), height .3s var(--ease), margin .3s var(--ease);
+}
+.cursor.show { opacity: 1; }
+.cursor.hover { width: 56px; height: 56px; margin: -28px 0 0 -28px; }
+
+/* 타이포그래피 / 여백 밸런스 */
+.sec-title { letter-spacing: -.035em; line-height: 1.28; }
+.sec-desc { letter-spacing: -.01em; }
+.sec-label { letter-spacing: .08em; }
+.service-list p br { display: none; }
+@media (min-width: 769px) { .service-list li a { padding: 20px 24px; } }

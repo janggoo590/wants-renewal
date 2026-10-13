@@ -1,0 +1,175 @@
+/* =========================================================
+   WANTS Renewal - Scroll Interaction
+   - Lenis : 관성 스무스 스크롤
+   - GSAP ScrollTrigger : 섹션 고정(Pin), 스크롤 연동 모션
+   - CDN 로드 실패 / 모션 최소화 설정 시 main.js 의 기본 reveal 로 동작
+   ========================================================= */
+(function () {
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion || !window.gsap || !window.ScrollTrigger) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+  document.documentElement.classList.add('gsap-on');
+
+  /* ---------- 1. Smooth Scroll (Lenis) ---------- */
+  if (window.Lenis) {
+    var lenis = new Lenis({ duration: 1.2, easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); } });
+    window.lenis = lenis;
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* ---------- 2. Scroll Progress Bar ---------- */
+  var progress = document.createElement('div');
+  progress.className = 'scroll-progress';
+  document.body.appendChild(progress);
+  gsap.to(progress, {
+    scaleX: 1, ease: 'none',
+    scrollTrigger: { start: 0, end: 'max', scrub: 0.3 }
+  });
+
+  /* ---------- 3. 섹션 타이틀 : 줄 단위 마스크 리빌 ---------- */
+  document.querySelectorAll('.sec-title').forEach(function (title) {
+    title.classList.remove('reveal', 'd1', 'd2', 'd3');
+    title.innerHTML = title.innerHTML
+      .split(/<br\s*\/?>/i)
+      .map(function (line) { return '<span class="line"><span class="line-inner">' + line.trim() + '</span></span>'; })
+      .join('');
+    gsap.from(title.querySelectorAll('.line-inner'), {
+      yPercent: 110, duration: 1.1, ease: 'power4.out', stagger: 0.12,
+      scrollTrigger: { trigger: title, start: 'top 85%' }
+    });
+  });
+
+  /* ---------- 4. 공통 Fade-up (기존 .reveal 대체) ---------- */
+  var revealEls = gsap.utils.toArray('.reveal').filter(function (el) { return !el.closest('.main-hero'); });
+  revealEls.forEach(function (el) { el.classList.remove('reveal'); });
+  gsap.set(revealEls, { autoAlpha: 0, y: 60 });
+  ScrollTrigger.batch(revealEls, {
+    start: 'top 88%',
+    once: true,
+    onEnter: function (batch) {
+      gsap.to(batch, { autoAlpha: 1, y: 0, duration: 1.1, ease: 'power3.out', stagger: 0.12, overwrite: true });
+    }
+  });
+
+  var mm = gsap.matchMedia();
+
+  /* ---------- 5. 섹션 1 : 고정(Pin) + 다음 섹션이 위로 덮으며 전환 ---------- */
+  var hero = document.querySelector('.main-hero');
+  if (hero) {
+    ScrollTrigger.create({ trigger: hero, start: 'top top', pin: true, pinSpacing: false });
+    gsap.timeline({
+      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true }
+    })
+      .to(hero, { '--dim': 0.75, ease: 'none' }, 0)
+      .to(hero.querySelector('.inner'), { autoAlpha: 0, ease: 'none' }, 0);
+  }
+
+  /* ---------- 6. 섹션 2 : 임시 비주얼 패럴랙스 ---------- */
+  var aboutVisual = document.querySelector('.main-about .about-visual');
+  if (aboutVisual) {
+    gsap.fromTo(aboutVisual, { y: 120, rotate: -8 }, {
+      y: -120, rotate: 8, ease: 'none',
+      scrollTrigger: { trigger: '.main-about', start: 'top bottom', end: 'bottom top', scrub: true }
+    });
+  }
+
+  /* ---------- 7. 섹션 3 : 서비스 카드 순차 등장 + 비주얼 패럴랙스 ---------- */
+  var serviceCards = gsap.utils.toArray('.service-list li');
+  if (serviceCards.length) {
+    gsap.from(serviceCards, {
+      y: 80, scale: 0.92, autoAlpha: 0, duration: 1, ease: 'power3.out', stagger: 0.08,
+      scrollTrigger: { trigger: '.service-list', start: 'top 85%' }
+    });
+  }
+  var serviceVisual = document.querySelector('.main-service .service-visual');
+  if (serviceVisual) {
+    gsap.fromTo(serviceVisual, { y: 150, scale: 0.85 }, {
+      y: -100, scale: 1.05, ease: 'none',
+      scrollTrigger: { trigger: '.main-service', start: 'top bottom', end: 'bottom top', scrub: true }
+    });
+  }
+
+  /* ---------- 8. 섹션 4 : 포트폴리오 고정 + 가로 스크롤 (PC) ---------- */
+  var pfSection = document.querySelector('.main-portfolio');
+  var pfViewport = document.querySelector('.pf-viewport');
+  if (pfSection && pfViewport) {
+    mm.add('(min-width: 1025px)', function () {
+      pfSection.classList.add('is-scrub');
+      var distance = function () { return pfViewport.scrollWidth - pfViewport.clientWidth; };
+      gsap.to(pfViewport, {
+        scrollLeft: distance, ease: 'none',
+        scrollTrigger: {
+          trigger: pfSection, start: 'center center',
+          end: function () { return '+=' + distance() * 1.5; },
+          pin: true, scrub: 0.8, invalidateOnRefresh: true
+        }
+      });
+      return function () { pfSection.classList.remove('is-scrub'); pfViewport.scrollLeft = 0; };
+    });
+  }
+
+  /* ---------- 9. 섹션 5 : 인스타 그리드 / 블로그 카드 ---------- */
+  var instaItems = gsap.utils.toArray('.insta-grid li');
+  if (instaItems.length) {
+    gsap.from(instaItems, {
+      scale: 0.8, autoAlpha: 0, duration: 0.9, ease: 'back.out(1.6)', stagger: { each: 0.08, from: 'random' },
+      scrollTrigger: { trigger: '.insta-grid', start: 'top 85%' }
+    });
+  }
+  var blogItems = gsap.utils.toArray('.blog-list li');
+  if (blogItems.length) {
+    gsap.from(blogItems, {
+      x: 60, autoAlpha: 0, duration: 1, ease: 'power3.out', stagger: 0.12,
+      scrollTrigger: { trigger: '.blog-list', start: 'top 85%' }
+    });
+  }
+
+  /* ---------- 10. CTA : 화면 가득 펼쳐지는 전환 ---------- */
+  gsap.utils.toArray('.main-cta').forEach(function (cta) {
+    gsap.fromTo(cta, { clipPath: 'inset(0% 8% 0% 8% round 40px)' }, {
+      clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none',
+      scrollTrigger: { trigger: cta, start: 'top bottom', end: 'top 30%', scrub: true }
+    });
+  });
+
+  /* ---------- 11. 서브 비주얼 : 타이틀 패럴랙스 ---------- */
+  var subVisual = document.querySelector('.sub-visual');
+  if (subVisual) {
+    gsap.to(subVisual.children, {
+      y: 80, autoAlpha: 0, ease: 'none',
+      scrollTrigger: { trigger: subVisual, start: 'top top', end: 'bottom top', scrub: true }
+    });
+  }
+
+  /* ---------- 12. 커스텀 커서 (마우스 사용 환경만) ---------- */
+  mm.add('(hover: hover) and (pointer: fine)', function () {
+    var cursor = document.createElement('div');
+    cursor.className = 'cursor';
+    document.body.appendChild(cursor);
+    document.documentElement.classList.add('has-cursor');
+
+    var xTo = gsap.quickTo(cursor, 'x', { duration: 0.35, ease: 'power3' });
+    var yTo = gsap.quickTo(cursor, 'y', { duration: 0.35, ease: 'power3' });
+    var onMove = function (e) { xTo(e.clientX); yTo(e.clientY); cursor.classList.add('show'); };
+    var onOver = function (e) { cursor.classList.toggle('hover', !!e.target.closest('a, button, label, input, select, textarea')); };
+    var onLeave = function () { cursor.classList.remove('show'); };
+
+    window.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseover', onOver);
+    document.addEventListener('mouseleave', onLeave);
+
+    return function () {
+      window.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseover', onOver);
+      document.removeEventListener('mouseleave', onLeave);
+      cursor.remove();
+      document.documentElement.classList.remove('has-cursor');
+    };
+  });
+
+  /* 이미지 / 웹폰트 로드 후 위치 재계산 */
+  window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+})();

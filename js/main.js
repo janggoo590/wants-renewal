@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (btnTop) {
     btnTop.addEventListener('click', function () {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.lenis) window.lenis.scrollTo(0);
+      else window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
       btnMenu.classList.toggle('active', isOpen);
       btnMenu.setAttribute('aria-expanded', isOpen);
       document.body.style.overflow = isOpen ? 'hidden' : '';
+      if (window.lenis) isOpen ? window.lenis.stop() : window.lenis.start();
     });
     gnb.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', function () {
@@ -38,12 +40,28 @@ document.addEventListener('DOMContentLoaded', function () {
         btnMenu.classList.remove('active');
         btnMenu.setAttribute('aria-expanded', false);
         document.body.style.overflow = '';
+        if (window.lenis) window.lenis.start();
       });
     });
   }
 
+  /* ---------- 배경 이미지 확인 : img 폴더에 이미지가 있으면 임시 도형 숨김 ---------- */
+  document.querySelectorAll('.js-bg').forEach(function (sec) {
+    var match = getComputedStyle(sec).backgroundImage.match(/url\(["']?(.*?)["']?\)/);
+    if (!match) return;
+    var img = new Image();
+    img.onload = function () { sec.classList.add('bg-loaded'); };
+    img.src = match[1];
+  });
+
   /* ---------- Scroll Reveal ---------- */
-  var reveals = document.querySelectorAll('.reveal');
+  // 첫 화면(섹션 1)은 스크롤과 관계없이 바로 등장
+  var heroReveals = document.querySelectorAll('.main-hero .reveal');
+  requestAnimationFrame(function () {
+    heroReveals.forEach(function (el) { el.classList.add('in'); });
+  });
+
+  var reveals = document.querySelectorAll('.reveal:not(.main-hero .reveal)');
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
