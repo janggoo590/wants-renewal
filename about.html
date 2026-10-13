@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add('ab-anim'); /* ABOUT 스크롤 시나리오 초기 상태 (js/about.js) */</script>
 </head>
 <body class="sub">
 
@@ -20,15 +21,22 @@
       <div class="logo">
         <a href="index.html"><img src="img/logo_top.png" alt="WANTS 브랜드 마케팅" width="220" height="61"></a>
       </div>
-      <nav class="gnb" id="gnb">
-        <ul>
-          <li><a href="about.html" class="on" aria-current="page">ABOUT</a></li>
-          <li><a href="services.html">SERVICES</a></li>
-          <li><a href="portfolio.html">PORTFOLIO</a></li>
-          <li><a href="faq.html">FAQ</a></li>
-          <li><a href="contact.html">CONTACT</a></li>
-        </ul>
-      </nav>
+      <!-- 서브페이지 메뉴 바 (PC : 마우스를 올리면 메뉴 펼침) -->
+      <div class="menu-bar">
+        <button type="button" class="menu-bar-btn" aria-label="메뉴 펼치기" aria-expanded="false" aria-controls="gnb">
+          <span class="menu-bar-txt">MENU</span>
+          <span class="menu-bar-ico" aria-hidden="true"><i></i><i></i><i></i></span>
+        </button>
+        <nav class="gnb" id="gnb">
+          <ul>
+            <li><a href="about.html" class="on" aria-current="page">ABOUT</a></li>
+            <li><a href="services.html">SERVICES</a></li>
+            <li><a href="portfolio.html">PORTFOLIO</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="contact.html">CONTACT</a></li>
+          </ul>
+        </nav>
+      </div>
       <button type="button" class="btn-menu" aria-label="메뉴 열기" aria-expanded="false" aria-controls="gnb">
         <span></span><span></span><span></span>
       </button>
@@ -36,64 +44,86 @@
   </header>
 
   <main>
-    <!-- ===== Sub Visual ===== -->
-    <section class="sub-visual">
-      <span class="sec-label">ABOUT WANTS</span>
-      <h2>Needs를 넘어 Wants를 만드는 기획</h2>
-      <p>브랜드의 본질을 정리하고, 검색과 AI가 확신하는 구조를 만듭니다.</p>
+    <!-- ===== 섹션 1 : 인트로 (원형 마스크 → 전체 화면 확장) ===== -->
+    <section class="ab-hero">
+      <div class="ab-hero-bg" aria-hidden="true">
+        <div class="ab-hero-img"></div><!-- 배경 이미지 : img/about_hero_bg.jpg -->
+        <div class="ab-hero-dim"></div>
+      </div>
+      <div class="inner">
+        <h1 class="ab-hero-title">ABOUT WANTS</h1>
+        <p class="ab-hero-copy">마케팅을 대신하는 회사보다 <br>함께 방향을 만드는 회사</p>
+        <p class="ab-hero-desc">현장의 강점을 가장 잘 아는 사람은 대표와 실무자입니다. <br>원츠는 그 이야기를 듣고, 고객에게 보이는 언어와 콘텐츠로 바꾸는 일부터 시작합니다.</p>
+      </div>
+      <div class="ab-scroll" aria-hidden="true">SCROLL</div>
     </section>
 
-    <!-- ===== Who we are ===== -->
-    <section class="sub-sec">
-      <div class="inner">
-        <span class="sec-label reveal">WHO WE ARE</span>
-        <h2 class="sec-title reveal d1">우리는 수량이 아닌<br><span class="t-blue">구조</span>를 설계합니다</h2>
-        <div class="split">
-          <div class="ph-box reveal"></div>
-          <div class="reveal d1">
-            <h3>노출에 그치는 마케팅이 아닌<br>AI가 확신하고 추천하는 정보</h3>
-            <p>원츠는 매체나 포스팅 수량을 파는 대행사가 아닙니다. 브랜드의 본질적인 강점을 정리하고, 홈페이지·블로그·플레이스·SNS·영상·검색광고가 하나의 메시지로 연결되도록 설계합니다.</p>
-            <p>SEO 기반의 정보 구조화부터 AEO·GEO까지 확장하여, 검색엔진과 AI 모두가 이해하는 브랜드를 만듭니다.</p>
-          </div>
+    <!-- ===== 섹션 2 : 문제 제기 (가운데 타이틀 → 좌측 박스로 축소 + 우측 카드) ===== -->
+    <section class="ab-problem">
+      <div class="inner pb-stage">
+        <div class="pb-head">
+          <h2 class="pb-title"><span class="ln">마케팅이 답답하다면</span><span class="ln"><em>어디에서 막히는지</em>부터 봅니다.</span></h2>
+          <p class="pb-sub">‘구조가 문제다’라는 모호한 말보다, 실제로 소통이 부족한지, <br>콘텐츠가 약한지, 채널 선택과 운영 방식이 잘못됐는지 나눠서 확인합니다.</p>
         </div>
-      </div>
-    </section>
-
-    <!-- ===== Numbers ===== -->
-    <section class="sub-sec gray">
-      <div class="inner center">
-        <span class="sec-label reveal">WANTS IN NUMBERS</span>
-        <h2 class="sec-title reveal d1">숫자로 보는 원츠</h2>
-        <ul class="stat-list reveal d2">
-          <li><strong>000+</strong><span>누적 프로젝트</span></li>
-          <li><strong>00%</strong><span>재계약률</span></li>
-          <li><strong>00+</strong><span>운영 브랜드</span></li>
-          <li><strong>0년</strong><span>마케팅 업력</span></li>
+        <!-- 처음 화면 가운데에 순차 등장하는 서브 문구 (PC 스크롤 연출용, 내용은 .pb-sub 와 동일) -->
+        <div class="pb-intro-sub" aria-hidden="true">
+          <p>‘구조가 문제다’라는 모호한 말보다,</p>
+          <p>실제로 소통이 부족한지,</p>
+          <p>콘텐츠가 약한지,</p>
+          <p>채널 선택과 운영 방식이 잘못됐는지</p>
+          <p class="last">나눠서 확인합니다.</p>
+        </div>
+        <ul class="pb-list">
+          <li>
+            <span class="num">01</span>
+            <div>
+              <h3>마케팅회사와 대화가 잘 되고 있나요?</h3>
+              <p>원츠는 계약만 받고 알아서 진행하는 방식보다, 대표와 실무자가 알고 있는 현장의 강점을 먼저 듣습니다. <br>마케팅 시장과 검색 환경은 계속 바뀌기 때문에 진행 중에도 지속적으로 의견을 나누고, <br>변화가 생기면 방향을 함께 조정합니다.</p>
+            </div>
+          </li>
+          <li>
+            <span class="num">02</span>
+            <div>
+              <h3>지금 나가는 콘텐츠가 우리 회사를 제대로 보여주나요?</h3>
+              <p>블로그, SNS, 홈페이지의 콘텐츠는 모양과 형식이 서로 달라도 됩니다. <br>하지만 전달하는 핵심 메시지는 같아야 합니다. 기존 콘텐츠를 분석하고 필요한 부분은 리뉴얼해, <br>채널마다 역할은 다르되 ‘우리 회사는 어떤 곳인지’는 하나의 메시지로 전달되게 설계합니다.</p>
+            </div>
+          </li>
+          <li>
+            <span class="num">03</span>
+            <div>
+              <h3>지금 필요한 채널을 제대로 쓰고 있나요?</h3>
+              <p>홈페이지, 블로그, 플레이스, SNS, 광고를 무조건 다 늘리는 게 답은 아닙니다. <br>현재 고객이 어디서 우리를 찾고 비교하는지 확인한 뒤 필요한 채널을 다시 정리하고, <br>검색과 AI 환경에 맞게 각 채널의 역할을 연결해 운영합니다.</p>
+            </div>
+          </li>
         </ul>
       </div>
     </section>
 
-    <!-- ===== Values ===== -->
-    <section class="sub-sec dark">
-      <div class="inner">
-        <span class="sec-label reveal">CORE VALUE</span>
-        <h2 class="sec-title reveal d1">원츠가 일하는 방식</h2>
-        <p class="sec-desc reveal d2">모든 프로젝트는 아래 세 가지 원칙에서 시작합니다.</p>
-        <ul class="card-grid reveal d3">
-          <li class="card"><span class="num">01</span><h3>본질 정리</h3><p>브랜드가 가진 강점과 고객이 실제로 원하는 것을 먼저 정리합니다.</p></li>
-          <li class="card"><span class="num">02</span><h3>구조 설계</h3><p>검색엔진과 AI가 이해할 수 있는 정보 구조로 채널을 연결합니다.</p></li>
-          <li class="card"><span class="num">03</span><h3>데이터 개선</h3><p>노출과 전환 데이터를 기반으로 매월 방향을 점검하고 개선합니다.</p></li>
+    <!-- ===== 섹션 3 : 핵심 가치 (타이틀 + 중앙 이미지 → 좌측 정렬 + 우측 지표 카드) ===== -->
+    <section class="ab-value">
+      <div class="inner vl-stage">
+        <div class="vl-head">
+          <h2 class="vl-title"><span class="ln">오래 함께할 수 있는</span><span class="ln">운영을 지향합니다.</span></h2>
+          <p class="vl-desc">한 번의 캠페인보다 브랜드 정보와 콘텐츠가 <br>계속 쌓이는 구조를 중요하게 봅니다.</p>
+        </div>
+        <div class="vl-thumb" aria-hidden="true"></div><!-- 배경 이미지 : img/about_value_bg.jpg -->
+        <ul class="vl-cards">
+          <li><span class="vl-img" aria-hidden="true"></span><div class="vl-txt"><strong>10년+</strong><span>온라인 마케팅 실무 경험</span></div></li>
+          <li><span class="vl-img" aria-hidden="true"></span><div class="vl-txt"><strong>평균 2~3년</strong><span>장기 관리 중심 운영</span></div></li>
+          <li><span class="vl-img" aria-hidden="true"></span><div class="vl-txt"><strong>전국</strong><span>지역 제약 없이 프로젝트 관리</span></div></li>
+          <li><span class="vl-img" aria-hidden="true"></span><div class="vl-txt"><strong>검색 <br>+ 콘텐츠</strong><span>SEO·AEO·GEO까지 연결</span></div></li>
         </ul>
       </div>
     </section>
 
-    <!-- ===== Location ===== -->
-    <section class="sub-sec">
+    <!-- ===== 섹션 4 : CTA ===== -->
+    <section class="ab-cta">
       <div class="inner">
-        <span class="sec-label reveal">LOCATION</span>
-        <h2 class="sec-title reveal d1">오시는 길</h2>
-        <p class="sec-desc reveal d2">부산광역시 해운대구 센텀중앙로 00, 원츠타워 0층</p>
-        <div class="ph-box map-box reveal d3"><!-- TODO: 지도 API 연동 --></div>
+        <div class="ab-cta-box">
+          <h2>어떤 채널부터 시작해야 할지 모르겠다면? <br>현재 브랜드 상태 진단부터 받아보세요.</h2>
+          <p>불필요한 대행 상품을 추가하기보다, 지금 검색엔진과 AI가 우리 브랜드를 어떻게 인식하고 있는지부터 객관적으로 분석해 드립니다.</p>
+          <a href="contact.html" class="btn-line white">1:1 마케팅 진단 <span class="arr"></span></a>
+        </div>
       </div>
     </section>
   </main>
@@ -156,5 +186,6 @@
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
   <script src="js/main.js"></script>
   <script src="js/scroll.js"></script>
+  <script src="js/about.js"></script>
 </body>
 </html>

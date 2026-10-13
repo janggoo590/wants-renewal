@@ -7,12 +7,49 @@ document.addEventListener('DOMContentLoaded', function () {
   var header = document.getElementById('header');
   var btnTop = document.querySelector('.btn-top');
 
+  /* 헤더 테마 : 헤더 바로 아래 섹션의 배경 밝기를 감지해 밝으면 .is-light (어두운 글자) */
+  function isLightBg(el) {
+    while (el && el !== document.documentElement) {
+      var m = getComputedStyle(el).backgroundColor.match(/rgba?\(([^)]+)\)/);
+      if (m) {
+        var c = m[1].split(',').map(parseFloat);
+        var alpha = c.length > 3 ? c[3] : 1;
+        if (alpha > 0.5) return (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) > 160;
+      }
+      el = el.parentElement;
+    }
+    return true; // 배경 지정이 없으면 body(흰색)
+  }
+  var menuBar = document.querySelector('.menu-bar');
+  function updateHeaderTheme() {
+    if (!header) return;
+    // 서브페이지 메뉴 바가 보이면(PC) 메뉴 바 바로 아래 배경을, 아니면 헤더 가운데 아래 배경을 기준으로 판단
+    var x = window.innerWidth / 2, y = header.offsetHeight / 2;
+    if (menuBar && getComputedStyle(menuBar).display !== 'contents') {
+      var r = menuBar.getBoundingClientRect();
+      x = r.right - 40; y = r.top + r.height / 2;
+    }
+    var els = document.elementsFromPoint(x, y);
+    var target = null;
+    for (var i = 0; i < els.length; i++) {
+      if (!header.contains(els[i])) { target = els[i]; break; }
+    }
+    header.classList.toggle('is-light', !!target && isLightBg(target));
+  }
+
+  var ticking = false;
   function onScroll() {
     var y = window.scrollY;
     if (header) header.classList.toggle('scrolled', y > 50);
     if (btnTop) btnTop.classList.toggle('show', y > 600);
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(function () { updateHeaderTheme(); ticking = false; });
+    }
   }
   window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  window.addEventListener('load', onScroll);
   onScroll();
 
   if (btnTop) {
@@ -43,6 +80,22 @@ document.addEventListener('DOMContentLoaded', function () {
         if (window.lenis) window.lenis.start();
       });
     });
+  }
+
+  /* ---------- Sub : 메뉴 바 (PC) ---------- */
+  // 마우스를 올리면 CSS(:hover)로 펼침. 터치 기기(큰 태블릿 등)는 버튼 클릭으로 열고 닫음
+  var menuBarBtn = document.querySelector('.menu-bar-btn');
+  if (menuBar && menuBarBtn) {
+    var setMenuBar = function (open) {
+      menuBar.classList.toggle('open', open);
+      menuBarBtn.setAttribute('aria-expanded', open);
+      menuBarBtn.setAttribute('aria-label', open ? '메뉴 접기' : '메뉴 펼치기');
+    };
+    menuBarBtn.addEventListener('click', function () { setMenuBar(!menuBar.classList.contains('open')); });
+    menuBar.addEventListener('mouseenter', function () { menuBarBtn.setAttribute('aria-expanded', true); });
+    menuBar.addEventListener('mouseleave', function () { setMenuBar(false); });
+    document.addEventListener('click', function (e) { if (!menuBar.contains(e.target)) setMenuBar(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menuBar.contains(document.activeElement)) { setMenuBar(false); document.activeElement.blur(); } });
   }
 
   /* ---------- 배경 이미지 확인 : img 폴더에 이미지가 있으면 임시 도형 숨김 ---------- */
