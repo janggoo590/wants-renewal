@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (drag.scrub) {
         // 드래그한 만큼 페이지 스크롤 위치를 옮겨 고정 구간과 동기화
         var st = drag.scrub.st;
-        var ratio = (st.end - st.start) / (drag.scrub.distance() || 1);
+        var ratio = drag.scrub.ratio ? drag.scrub.ratio() : (st.end - st.start) / (drag.scrub.distance() || 1);
         var y = drag.startScroll - dx * ratio;
         if (drag.startScroll >= st.start && drag.startScroll <= st.end) {
           y = Math.min(st.end, Math.max(st.start, y)); // 고정 구간 안에서만 이동

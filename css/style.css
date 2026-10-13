@@ -193,7 +193,9 @@ input, textarea, select { font: inherit; }
 
 /* ---------- Section 3 : Services ---------- */
 .main-service {
-  position: relative; padding: 170px 0 190px;
+  /* 화면 높이에 맞춤 + 세로 중앙 : 고정(Pin) 시 제목부터 카드까지 한 화면에 */
+  position: relative; display: flex; align-items: center;
+  min-height: 100vh; padding: 120px 0 90px;
   background-color: #020202;
   color: #fff; overflow: hidden;
 }
@@ -217,12 +219,12 @@ input, textarea, select { font: inherit; }
 }
 .main-service .inner { position: relative; z-index: 1; }
 .bg-loaded .ph-visual { display: none; }
-.main-service .sec-desc { color: #fff; margin-top: 24px; }
-.main-service .btn-fill { margin-top: 36px; }
-.service-list { display: grid; grid-template-columns: repeat(4, 240px); gap: 22px 21px; margin-top: 36px; }
+.main-service .sec-desc { color: #fff; margin-top: 18px; }
+.main-service .btn-fill { margin-top: 28px; }
+.service-list { display: grid; grid-template-columns: repeat(4, 240px); gap: 16px 21px; margin-top: 30px; }
 .service-list li a {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  height: 196px; padding: 20px;
+  height: 176px; padding: 20px;
   background: var(--c-card); border: 1px solid var(--c-card-line); border-radius: 8px;
   text-align: center; transition: background .35s, color .35s, transform .35s var(--ease);
 }
@@ -234,7 +236,7 @@ input, textarea, select { font: inherit; }
 .service-list li a:hover p, .service-list li.on a p { color: var(--c-gray); }
 
 /* ---------- Section 4 : Portfolio ---------- */
-.main-portfolio { padding: 140px 0 100px; overflow: hidden; }
+.main-portfolio { padding: 140px 0 100px; background: #fff; overflow: hidden; } /* 배경 지정 : 고정된 섹션 3 위를 덮을 때 비치지 않도록 */
 .main-portfolio .btn-line { margin-top: 34px; height: 40px; padding: 0 26px 2px; }
 .pf-slider { position: relative; margin-top: 40px; }
 .pf-viewport { overflow: hidden; max-width: 1212px; margin: 0 auto; padding: 0 0 4px; }
@@ -262,7 +264,7 @@ input, textarea, select { font: inherit; }
 .pf-ctrl button:disabled { opacity: .25; pointer-events: none; }
 
 /* ---------- Section 5 : Content ---------- */
-.main-content { padding: 220px 0 180px; }
+.main-content { padding: 220px 0 180px; background: #fff; }
 .content-wrap { display: flex; gap: 20px; max-width: 1016px; margin: 110px auto 0; }
 .insta-box { flex: 0 0 632px; padding: 18px 12px 12px; border: 1.5px solid var(--c-line); border-radius: 16px; }
 .insta-box h3 { font-size: 16px; font-weight: 700; text-align: center; margin-bottom: 16px; }
@@ -591,11 +593,11 @@ main { overflow-x: clip; } /* 애니메이션 요소의 가로 넘침 방지 (bo
 }
 
 /* 섹션 1, 2 : 고정 후 다음 섹션이 덮으며 어두워짐 */
-.main-hero::after, .main-about::after {
+.main-hero::after, .main-about::after, .main-service::after {
   content: ''; position: absolute; inset: 0; z-index: 1;
   background: #000; opacity: var(--dim, 0); pointer-events: none;
 }
-.main-about::after { z-index: 0; } /* 섹션 2 텍스트(.inner, z-index 1) 아래 */
+.main-about::after, .main-service::after { z-index: 0; } /* 섹션 텍스트(.inner, z-index 1) 아래 */
 .main-hero ~ section { position: relative; z-index: 2; }
 
 /* 섹션 타이틀 줄 단위 마스크 */

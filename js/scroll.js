@@ -85,8 +85,8 @@
         return;
       }
       var c = chars[i];
-      var delay = c.textContent === ' ' ? 40 : 70 + Math.random() * 50;
-      if (c.dataset.pause) delay += 250; // 줄바꿈에서 잠깐 멈춤
+      var delay = c.textContent === ' ' ? 25 : 40 + Math.random() * 30;
+      if (c.dataset.pause) delay += 150; // 줄바꿈에서 잠깐 멈춤
       setTimeout(function () {
         c.classList.add('on');
         c.parentNode.insertBefore(caret, c.nextSibling);
@@ -114,22 +114,82 @@
 
   var mm = gsap.matchMedia();
 
-  /* ---------- 5. 섹션 1 → 2, 섹션 2 → 3 : 고정(Pin) + 다음 섹션이 위로 덮으며 어두워지는 전환 ---------- */
-  var stackOver = function (section) {
+  /* ---------- 5. 섹션 1 → 2 → 3 → 4 : 고정(Pin) + 머무름 + 다음 섹션이 위로 덮으며 어두워지는 전환 ---------- */
+  // 머무름 구간 : 섹션이 화면에 다 보인 상태로 이 거리만큼 스크롤해도 그대로 유지된 뒤 다음 섹션이 올라옴
+  var HOLD_PC = 0.8;          // 화면 높이 대비 (PC)
+  var HOLD_MOBILE = 0.5;      // 화면 높이 대비 (모바일)
+  var HOLD_SERVICE_PC = 2.1;  // 섹션 3 : 카드 7개를 순차적으로 보여주므로 더 길게
+  var stacks = [];
+
+  var stackOver = function (section, opts) {
+    opts = opts || {};
+    var ratio = opts.holdRatio || function () { return window.innerWidth <= 768 ? HOLD_MOBILE : HOLD_PC; };
+    var getHold = function () { return Math.round(window.innerHeight * ratio()); };
+    var next = section.nextElementSibling; // 고정(pin) 전에 다음 섹션 확보
     // 화면보다 긴 섹션은 하단이 화면 하단에 닿을 때 고정 (내용이 잘리지 않도록)
-    var start = function () { return section.offsetHeight > window.innerHeight ? 'bottom bottom' : 'top top'; };
-    var end = function () { return '+=' + Math.min(section.offsetHeight, window.innerHeight); };
-    ScrollTrigger.create({ trigger: section, start: start, end: end, pin: true, pinSpacing: false, invalidateOnRefresh: true });
-    // 다음 섹션이 올라오는 동안 점점 어두워짐 (0 → 0.9) + 텍스트 페이드아웃
-    gsap.timeline({
-      scrollTrigger: { trigger: section, start: start, end: end, scrub: 0.5, invalidateOnRefresh: true }
+    var anchor = function () { return section.offsetHeight > window.innerHeight ? 'bottom bottom' : 'top top'; };
+    var cover = function () { return Math.min(section.offsetHeight, window.innerHeight); };
+    var stack = { next: next, getHold: getHold };
+    if (next) next.style.marginTop = getHold() + 'px'; // 다음 섹션을 머무름 거리만큼 아래로 (투명 여백)
+    stacks.push(stack);
+
+    // 고정 + 어두워짐을 하나의 타임라인으로 : [머무름 구간] → [다음 섹션이 덮는 구간 : 0 → 0.9 어두워짐 + 텍스트 페이드아웃]
+    var hold = getHold(), coverDist = cover();
+    var proxy = { p: 0 };
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section, start: anchor,
+        end: function () { return '+=' + (getHold() + cover()); },
+        pin: true, pinSpacing: false, scrub: 1, invalidateOnRefresh: true
+      }
     })
-      .to(section, { '--dim': 0.9, ease: 'power1.in', duration: 1 }, 0)
-      .to(section.querySelector('.inner'), { autoAlpha: 0, ease: 'none', duration: 0.6 }, 0);
+      .to(proxy, { p: 1, ease: 'none', duration: hold, onUpdate: function () { if (opts.onHold) opts.onHold(proxy.p); } })
+      .to(section, { '--dim': 0.9, ease: 'power1.in', duration: coverDist }, hold)
+      .to(section.querySelector('.inner'), { autoAlpha: 0, ease: 'none', duration: coverDist * 0.6 }, hold);
+
+    // 해제(화면 크기 조건 변경) 시 여백 원복
+    return function () {
+      if (next) next.style.marginTop = '';
+      stacks.splice(stacks.indexOf(stack), 1);
+    };
   };
   ['.main-hero', '.main-about'].forEach(function (sel) {
     var section = document.querySelector(sel);
     if (section) stackOver(section);
+  });
+
+  // 섹션 3 : 머무는 동안 스크롤에 따라 카드 hover 효과를 순서대로 표시
+  var serviceSec = document.querySelector('.main-service');
+  var serviceLis = gsap.utils.toArray('.service-list li');
+  var setActiveCard = function (idx) {
+    serviceLis.forEach(function (li, k) { li.classList.toggle('on', k === idx); });
+  };
+  if (serviceSec && serviceLis.length) {
+    mm.add('(min-width: 1025px)', function () {
+      var release = stackOver(serviceSec, {
+        holdRatio: function () { return HOLD_SERVICE_PC; },
+        onHold: function (p) {
+          // 머무름 구간을 카드 수만큼 나눠 순차 강조 (시작 직후 1번, 끝에서 7번)
+          setActiveCard(p <= 0 ? -1 : Math.min(serviceLis.length - 1, Math.floor(p * serviceLis.length)));
+        }
+      });
+      return function () { release(); setActiveCard(-1); };
+    });
+    // 모바일/태블릿 : 고정 없이, 카드가 화면 가운데를 지날 때 순서대로 강조
+    mm.add('(max-width: 1024px)', function () {
+      serviceLis.forEach(function (li, k) {
+        ScrollTrigger.create({
+          trigger: li, start: 'top 60%', end: 'bottom 40%',
+          onToggle: function (self) { if (self.isActive) setActiveCard(k); }
+        });
+      });
+      return function () { setActiveCard(-1); };
+    });
+  }
+
+  // 화면 크기 변경 시 머무름 거리 재계산 (위치 측정 전에 실행)
+  ScrollTrigger.addEventListener('refreshInit', function () {
+    stacks.forEach(function (st) { if (st.next) st.next.style.marginTop = st.getHold() + 'px'; });
   });
 
   /* ---------- 6. 섹션 2 : 임시 비주얼 패럴랙스 ---------- */
@@ -171,16 +231,26 @@
     mm.add('(min-width: 1025px)', function () {
       pfSection.classList.add('is-scrub');
       var distance = function () { return pfViewport.scrollWidth - pfViewport.clientWidth; };
-      var pfTween = gsap.to(pfViewport, {
-        scrollLeft: distance, ease: 'none',
+      // 시작 전 잠깐 머무름(0.2) → 가로 이동(1) → 마지막 카드에서 머무름(0.3)
+      var PF_PRE = 0.2, PF_MOVE = 1, PF_POST = 0.3;
+      var pfTl = gsap.timeline({
         scrollTrigger: {
           trigger: pfSection, start: 'center center',
-          end: function () { return '+=' + distance() * 1.5; },
-          pin: true, scrub: 0.8, invalidateOnRefresh: true
+          end: function () { return '+=' + (distance() * 2.5 + window.innerHeight * 0.5); },
+          pin: true, scrub: 1, invalidateOnRefresh: true
         }
-      });
-      // 드래그 시 스크롤 위치와 동기화하기 위해 main.js 에 전달
-      pfViewport._pfScrub = { st: pfTween.scrollTrigger, distance: distance };
+      })
+        .to({}, { duration: PF_PRE })
+        .to(pfViewport, { scrollLeft: distance, ease: 'none', duration: PF_MOVE })
+        .to({}, { duration: PF_POST });
+      // 드래그 시 스크롤 위치와 동기화하기 위해 main.js 에 전달 (가로 이동 구간 기준 비율)
+      pfViewport._pfScrub = {
+        st: pfTl.scrollTrigger, distance: distance,
+        ratio: function () {
+          var st = pfTl.scrollTrigger;
+          return (st.end - st.start) * (PF_MOVE / (PF_PRE + PF_MOVE + PF_POST)) / (distance() || 1);
+        }
+      };
       return function () { pfSection.classList.remove('is-scrub'); pfViewport.scrollLeft = 0; delete pfViewport._pfScrub; };
     });
   }
