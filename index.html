@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WANTS | 원츠 브랜드 마케팅</title>
   <meta name="description" content="홈페이지, 블로그, 플레이스, SNS, 영상, 검색광고까지. 검색부터 AI 답변까지 연결되는 하나의 브랜드 구조를 만드는 원츠 브랜드 마케팅.">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon.png">
+  <link rel="apple-touch-icon" href="img/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -16,7 +18,7 @@
   <header id="header">
     <div class="inner">
       <h1 class="logo">
-        <a href="index.html"><span class="logo-sub">BRAND MARKETING</span><span class="logo-main">WANTS</span></a>
+        <a href="index.html"><img src="img/logo_top.png" alt="WANTS 브랜드 마케팅" width="220" height="61"></a>
       </h1>
       <nav class="gnb" id="gnb">
         <ul>
@@ -36,6 +38,7 @@
   <main>
     <!-- ===== Section 1 : Hero ===== -->
     <section class="main-hero" id="hero">
+      <div class="hero-bg" aria-hidden="true"></div>
       <div class="inner">
         <p class="hero-label reveal">ONLINE MARKETING · SEO · AEO · GEO</p>
         <h2 class="hero-title reveal d1">변화를 읽는 <span class="t-blue">마케팅</span><br>다음을 만드는 <span class="t-green">전략</span></h2>
@@ -74,7 +77,7 @@
         <a href="services.html" class="btn-fill reveal d2">WANTS SERVICE <i class="arr"></i></a>
         <ul class="service-list reveal d3">
           <li><a href="services.html#svc01"><span class="num">01</span><strong>SEO·AEO·GEO</strong><p>검색 노출부터 답변형 콘텐츠, AI가 이해하는<br> 브랜드 정보 구조까지 연결합니다.</p></a></li>
-          <li class="on"><a href="services.html#svc02"><span class="num">02</span><strong>홈페이지 제작</strong><p>브랜드 소개, 전환, 검색 구조를 함께 고려한<br> 홈페이지를 설계합니다.</p></a></li>
+          <li><a href="services.html#svc02"><span class="num">02</span><strong>홈페이지 제작</strong><p>브랜드 소개, 전환, 검색 구조를 함께 고려한<br> 홈페이지를 설계합니다.</p></a></li>
           <li><a href="services.html#svc03"><span class="num">03</span><strong>네이버 블로그</strong><p>검색 노출부터 답변형 콘텐츠, AI가 이해하는<br> 브랜드 정보 구조까지 연결합니다.</p></a></li>
           <li><a href="services.html#svc04"><span class="num">04</span><strong>플레이스 마케팅</strong><p>검색 노출부터 답변형 콘텐츠, AI가 이해하는<br> 브랜드 정보 구조까지 연결합니다.</p></a></li>
           <li><a href="services.html#svc05"><span class="num">05</span><strong>SNS · 인스타그램</strong><p>브랜드의 분위기와 경험을 보여주는 피드와<br> 숏폼 콘텐츠를 운영합니다.</p></a></li>
@@ -142,7 +145,12 @@
     </section>
 
     <!-- ===== Section 6 : CTA ===== -->
-    <section class="main-cta">
+    <section class="main-cta has-video">
+      <!-- 배경 동영상 : 화면에 가까워지면 재생 (js/main.js) -->
+      <video class="cta-video js-lazy-video" muted loop playsinline preload="none" poster="video/main_cta_bg_poster.jpg" aria-hidden="true">
+        <source src="video/main_cta_bg_m.mp4" type="video/mp4" media="(max-width: 768px)">
+        <source src="video/main_cta_bg.mp4" type="video/mp4">
+      </video>
       <div class="inner">
         <h2 class="reveal">어떤 채널부터 시작해야 할지 모르겠다면?<br>현재 브랜드 상태 진단부터 받아보세요.</h2>
         <p class="reveal d1">불필요한 대행 상품을 추가하기보다, 지금 검색엔진과 AI가 우리 브랜드를 어떻게 인식하고 있는지부터 객관적으로 분석해 드립니다.</p>
@@ -156,7 +164,7 @@
     <div class="inner">
       <div class="ft-top">
         <div class="ft-logo">
-          <span class="logo-main">WANTS</span>
+          <a href="index.html"><img src="img/logo_top.png" alt="WANTS 브랜드 마케팅" width="220" height="61"></a>
           <p>검색부터 AI 답변까지, 연결되는 브랜드 마케팅</p>
         </div>
         <ul class="ft-menu">
@@ -171,20 +179,20 @@
         <div class="ft-info">
           <p>
             <span><b>상호</b>(주)원츠 브랜드마케팅</span>
-            <span><b>대표</b>홍길동</span>
-            <span><b>사업자등록번호</b>000-00-00000</span>
-            <span><b>통신판매업신고</b>제2026-부산해운대-0000호</span>
+            <span><b>대표</b>최의영</span>
+            <span><b>사업자등록번호</b>286-81-02692</span>
           </p>
           <p>
-            <span><b>주소</b>부산광역시 해운대구 센텀중앙로 00, 원츠타워 0층</span>
-            <span><b>대표번호</b>051-000-0000</span>
-            <span><b>이메일</b>hello@wants-marketing.co.kr</span>
+            <span><b>주소</b>부산광역시 남구 용소로 19번길 19, 동우빌딩 2층</span>
+            <span><b>개인정보보호책임자</b>최의영</span>
+            <span><b>대표번호</b>051-916-7000</span>
+            <span><b>E-mail</b>wants24@naver.com</span>
           </p>
-          <p class="ft-copy">© 2026 WANTS BRAND MARKETING. All Rights Reserved.</p>
+          <p class="ft-copy">© 2022 WANTS BRAND MARKETING. All Rights Reserved.</p>
         </div>
         <div class="ft-right">
           <div class="ft-cs">
-            <strong>051-000-0000</strong>
+            <strong>051-916-7000</strong>
             <span>평일 09:00 - 18:00 (점심 12:00 - 13:00) · 주말/공휴일 휴무</span>
           </div>
           <div class="ft-sns">

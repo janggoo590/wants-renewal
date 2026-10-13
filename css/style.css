@@ -5,6 +5,13 @@
    - 이미지 영역은 임시 단색(무채색) 박스로 구현 (추후 background-image 교체)
    ========================================================= */
 
+/* ---------- Web Font ---------- */
+@font-face {
+  font-family: 'KIMM_Bold';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2212@1.0/KIMM_Bold.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+
 /* ---------- Variables ---------- */
 :root {
   --c-blue: #00a8ec;
@@ -93,6 +100,8 @@ input, textarea, select { font: inherit; }
 .logo a { display: flex; align-items: flex-end; gap: 6px; color: var(--c-blue); }
 .logo .logo-sub { font-size: 8px; font-weight: 700; letter-spacing: .25em; padding-bottom: 8px; }
 .logo .logo-main { font-size: 40px; font-weight: 900; font-style: italic; letter-spacing: -.04em; line-height: 1; }
+.logo img { width: 220px; height: auto; transition: width .35s var(--ease); }
+#header.scrolled .logo img { width: 180px; }
 .gnb ul { display: flex; gap: 42px; }
 .gnb a { position: relative; color: #fff; font-family: 'Inter', 'Noto Sans KR', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: .01em; }
 .gnb a::after {
@@ -117,12 +126,23 @@ input, textarea, select { font: inherit; }
 .main-hero {
   position: relative; display: flex; align-items: center;
   height: 100vh; min-height: 760px; max-height: 1000px;
-  background-color: var(--ph-1);
-  background-image: url('../img/main_hero_bg.jpg');
-  background-size: cover; background-position: center;
+  background-color: #020202;
   color: #fff; overflow: hidden;
 }
-.main-hero .inner { position: relative; z-index: 1; padding-top: 60px; transform: translateY(20%); }
+/* 배경 이미지 레이어 : 페이지 진입 시 작게 시작해 커지며 튀어나오는 인트로 */
+.main-hero .hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-image: url('../img/main_hero_bg.jpg');
+  background-size: cover; background-position: center;
+  animation: heroBgIntro 1.8s cubic-bezier(.22, 1, .36, 1) both;
+}
+@keyframes heroBgIntro {
+  0%   { transform: scale(.6); opacity: 0; }
+  20%  { opacity: 1; }
+  70%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+.main-hero .inner { position: relative; z-index: 2; padding-top: 60px; transform: translateY(20%); }
 .hero-label { font-size: 19px; font-weight: 700; margin-bottom: 18px; }
 .hero-title { font-size: 65px; font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
 .hero-desc { margin-top: 26px; font-size: 18px; line-height: 1.65; color: rgba(255,255,255,.88); }
@@ -131,7 +151,9 @@ input, textarea, select { font: inherit; }
 
 /* ---------- Section 2 : About ---------- */
 .main-about {
-  position: relative; padding: 210px 0 220px;
+  /* 화면 전체 높이 확보 + 내용 세로 중앙 : 고정(Pin) 시 섹션 전체가 보인 상태로 섹션 3이 덮음 */
+  position: relative; display: flex; align-items: center;
+  min-height: 100vh; padding: 180px 0 160px;
   background-color: #fff;
   background-image: url('../img/main_about_bg.jpg');
   background-size: cover; background-position: center;
@@ -148,7 +170,7 @@ input, textarea, select { font: inherit; }
 .about-box {
   width: 668px; max-width: 100%;
   padding: 36px 56px 38px;
-  border: 2px solid var(--c-line); border-radius: 6px; background: #fff;
+  border: 2px solid var(--c-line); border-radius: 16px; background: #fff;
 }
 .about-box strong { display: block; font-size: 30px; font-weight: 700; line-height: 1.32; letter-spacing: -.02em; }
 .about-box p { margin-top: 10px; font-size: 14px; color: var(--c-gray); line-height: 1.5; }
@@ -160,16 +182,32 @@ input, textarea, select { font: inherit; }
   transition: background .3s, color .3s, border-color .3s;
 }
 .btn-circle small { font-size: 13px; color: var(--c-gray); margin-top: 2px; transition: color .3s; }
-.btn-circle:hover { background: #222; color: #fff; border-color: #222; }
+.btn-circle:hover { background: #222; color: #fff; border-color: #222; animation-play-state: paused; }
+/* 부양 효과 : 제자리에서 위아래 ±5px, hover 시 정지 */
+.btn-circle { animation: btnFloat 2s ease-in-out infinite; }
+@keyframes btnFloat {
+  0%, 100% { transform: translateY(-5px); }
+  50%      { transform: translateY(5px); }
+}
 .btn-circle:hover small { color: #ccc; }
 
 /* ---------- Section 3 : Services ---------- */
 .main-service {
   position: relative; padding: 170px 0 190px;
-  background-color: var(--ph-1);
+  background-color: #020202;
+  color: #fff; overflow: hidden;
+}
+/* 배경 이미지 레이어 : 스크롤 진입 시 제자리에서 서서히 나타남 (js/scroll.js) */
+.main-service::before {
+  content: ''; position: absolute; inset: 0; z-index: 0;
   background-image: url('../img/main_service_bg.jpg');
   background-size: cover; background-position: center;
-  color: #fff; overflow: hidden;
+  opacity: var(--bg-op, 1);
+  animation: serviceBgFloat 4s ease-in-out infinite; /* 부양 효과 : 위아래 ±10px */
+}
+@keyframes serviceBgFloat {
+  0%, 100% { transform: translateY(-10px); }
+  50%      { transform: translateY(10px); }
 }
 .main-service .service-visual {
   /* 임시 오브젝트 영역 (시안의 구체 이미지 자리) - 배경 이미지가 있으면 JS가 숨김 */
@@ -188,10 +226,10 @@ input, textarea, select { font: inherit; }
   background: var(--c-card); border: 1px solid var(--c-card-line); border-radius: 8px;
   text-align: center; transition: background .35s, color .35s, transform .35s var(--ease);
 }
-.service-list .num { font-size: 20px; font-weight: 700; color: var(--c-green); letter-spacing: .04em; line-height: 1; }
+.service-list .num { font-family: 'KIMM_Bold', 'Noto Sans KR', sans-serif; font-size: 20px; font-weight: 700; color: var(--c-green); letter-spacing: .04em; line-height: 1; }
 .service-list strong { margin-top: 10px; font-size: 18px; font-weight: 700; }
 .service-list p { margin-top: 12px; font-size: 12px; line-height: 1.6; color: rgba(255,255,255,.85); }
-.service-list li a:hover, .service-list li.on a { background: #fff; color: #222; transform: translateY(-6px); }
+.service-list li a:hover, .service-list li.on a { background: #fff; color: #222; }
 .service-list li a:hover .num, .service-list li.on a .num { color: var(--c-blue); }
 .service-list li a:hover p, .service-list li.on a p { color: var(--c-gray); }
 
@@ -256,7 +294,11 @@ input, textarea, select { font: inherit; }
 }
 
 /* ---------- Section 6 : CTA ---------- */
-.main-cta { padding: 100px 0 90px; background: var(--c-cta); color: #fff; text-align: center; }
+.main-cta { position: relative; padding: 100px 0 90px; background: var(--c-cta); color: #fff; text-align: center; overflow: hidden; }
+/* 배경 동영상 + 가독성용 반투명 막 */
+.main-cta .cta-video { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; }
+.main-cta.has-video::before { content: ''; position: absolute; inset: 0; z-index: 1; background: rgba(4, 40, 60, .72); }
+.main-cta .inner { position: relative; z-index: 2; }
 .main-cta h2 { font-size: 40px; font-weight: 700; line-height: 1.4; letter-spacing: -.02em; }
 .main-cta p { margin-top: 14px; font-size: 15px; color: rgba(255,255,255,.9); }
 .main-cta .btn-line { margin-top: 30px; width: 362px; max-width: 100%; height: 50px; font-size: 19px; }
@@ -393,6 +435,7 @@ input, textarea, select { font: inherit; }
 #footer { padding: 80px 0 60px; background: var(--c-footer); color: rgba(255,255,255,.6); font-size: 14px; }
 .ft-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,.12); }
 .ft-logo .logo-main { color: var(--c-blue); font-size: 34px; font-weight: 900; font-style: italic; letter-spacing: -.04em; }
+.ft-logo img { display: block; width: 200px; height: auto; }
 .ft-logo p { margin-top: 10px; color: rgba(255,255,255,.75); font-size: 15px; }
 .ft-menu { display: flex; gap: 32px; }
 .ft-menu a { color: #fff; font-weight: 700; font-size: 15px; transition: color .3s; }
@@ -464,7 +507,7 @@ input, textarea, select { font: inherit; }
   .gnb.open { opacity: 1; visibility: visible; }
   .gnb ul { flex-direction: column; align-items: center; gap: 34px; }
   .gnb a { font-size: 30px; }
-  .main-hero { background-position: 62% center; }
+  .main-hero .hero-bg { background-position: 62% center; }
   .main-about .about-visual { opacity: .35; }
   .split, .svc-detail, .contact-wrap { grid-template-columns: 1fr; gap: 40px; }
   .svc-detail:nth-child(even) .ph-box { order: 0; }
@@ -477,8 +520,9 @@ input, textarea, select { font: inherit; }
   .inner { padding: 0 20px; }
   .logo .logo-main { font-size: 32px; }
   .logo .logo-sub { display: none; }
+  .logo img, #header.scrolled .logo img { width: 150px; }
   .main-hero { min-height: 640px; }
-  .main-hero::before { content: ''; position: absolute; inset: 0; background: rgba(0, 0, 0, .5); }
+  .main-hero::before { content: ''; position: absolute; inset: 0; z-index: 1; background: rgba(0, 0, 0, .5); }
   .hero-label { font-size: 14px; }
   .hero-title { font-size: 38px; }
   .hero-desc { font-size: 15px; }
@@ -525,6 +569,7 @@ input, textarea, select { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
+  .main-hero .hero-bg, .btn-circle, .main-service::before { animation: none; }
 }
 
 /* =========================================================
@@ -545,11 +590,12 @@ main { overflow-x: clip; } /* 애니메이션 요소의 가로 넘침 방지 (bo
   transform: scaleX(0); transform-origin: 0 50%; pointer-events: none;
 }
 
-/* 섹션 1 : 고정 후 다음 섹션이 덮으며 어두워짐 */
-.main-hero::after {
-  content: ''; position: absolute; inset: 0; z-index: 0;
+/* 섹션 1, 2 : 고정 후 다음 섹션이 덮으며 어두워짐 */
+.main-hero::after, .main-about::after {
+  content: ''; position: absolute; inset: 0; z-index: 1;
   background: #000; opacity: var(--dim, 0); pointer-events: none;
 }
+.main-about::after { z-index: 0; } /* 섹션 2 텍스트(.inner, z-index 1) 아래 */
 .main-hero ~ section { position: relative; z-index: 2; }
 
 /* 섹션 타이틀 줄 단위 마스크 */
@@ -573,9 +619,27 @@ main { overflow-x: clip; } /* 애니메이션 요소의 가로 넘침 방지 (bo
 .cursor.show { opacity: 1; }
 .cursor.hover { width: 56px; height: 56px; margin: -28px 0 0 -28px; }
 
+/* 포트폴리오 드래그 앤 드롭 */
+.pf-viewport { cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.pf-viewport.is-dragging { cursor: grabbing; }
+.pf-viewport.is-dragging a { pointer-events: none; }
+.pf-viewport img { -webkit-user-drag: none; }
+
 /* 타이포그래피 / 여백 밸런스 */
 .sec-title { letter-spacing: -.035em; line-height: 1.28; }
 .sec-desc { letter-spacing: -.01em; }
 .sec-label { letter-spacing: .08em; }
 .service-list p br { display: none; }
 @media (min-width: 769px) { .service-list li a { padding: 20px 24px; } }
+
+/* 섹션 2 타이틀 타이핑 효과 (js/scroll.js) */
+.sec-title .char { visibility: hidden; }
+.sec-title .char.on { visibility: visible; }
+.type-caret { display: inline-block; position: relative; width: 0; height: 1em; vertical-align: -.12em; }
+.type-caret::after {
+  content: ''; position: absolute; left: 3px; top: 0;
+  width: 3px; height: 100%; background: currentColor;
+  animation: caretBlink .8s steps(1) infinite;
+}
+.type-caret.done { opacity: 0; transition: opacity .4s; }
+@keyframes caretBlink { 50% { opacity: 0; } }

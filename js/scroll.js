@@ -31,6 +31,7 @@
 
   /* ---------- 3. 섹션 타이틀 : 줄 단위 마스크 리빌 ---------- */
   document.querySelectorAll('.sec-title').forEach(function (title) {
+    if (title.closest('.main-about')) return; // 섹션 2 는 타이핑 효과 (아래 3-1)
     title.classList.remove('reveal', 'd1', 'd2', 'd3');
     title.innerHTML = title.innerHTML
       .split(/<br\s*\/?>/i)
@@ -41,6 +42,63 @@
       scrollTrigger: { trigger: title, start: 'top 85%' }
     });
   });
+
+  /* ---------- 3-1. 섹션 2 타이틀 : 타이핑 효과 ---------- */
+  var typeTitle = document.querySelector('.main-about .sec-title');
+  if (typeTitle) {
+    typeTitle.classList.remove('reveal', 'd1', 'd2', 'd3');
+    typeTitle.setAttribute('aria-label', typeTitle.innerHTML.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim());
+
+    // 글자 단위로 감싸기 (색상 span, 줄바꿈 br 유지)
+    var chars = [];
+    var afterBreak = false;
+    (function wrap(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+        if (child.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          Array.from(child.textContent).forEach(function (ch) {
+            var s = document.createElement('span');
+            s.className = 'char';
+            s.setAttribute('aria-hidden', 'true');
+            s.textContent = ch;
+            if (afterBreak) { s.dataset.pause = '1'; afterBreak = false; }
+            frag.appendChild(s);
+            chars.push(s);
+          });
+          child.parentNode.replaceChild(frag, child);
+        } else if (child.nodeName === 'BR') {
+          afterBreak = true;
+        } else if (child.nodeType === 1) {
+          wrap(child);
+        }
+      });
+    })(typeTitle);
+
+    var caret = document.createElement('span');
+    caret.className = 'type-caret';
+    caret.setAttribute('aria-hidden', 'true');
+    chars[0].parentNode.insertBefore(caret, chars[0]);
+
+    var typeNext = function (i) {
+      if (i >= chars.length) {
+        setTimeout(function () { caret.classList.add('done'); }, 2000); // 완료 후 2초 깜빡이다 사라짐
+        return;
+      }
+      var c = chars[i];
+      var delay = c.textContent === ' ' ? 40 : 70 + Math.random() * 50;
+      if (c.dataset.pause) delay += 250; // 줄바꿈에서 잠깐 멈춤
+      setTimeout(function () {
+        c.classList.add('on');
+        c.parentNode.insertBefore(caret, c.nextSibling);
+        typeNext(i + 1);
+      }, delay);
+    };
+
+    ScrollTrigger.create({
+      trigger: typeTitle, start: 'top 80%', once: true,
+      onEnter: function () { typeNext(0); }
+    });
+  }
 
   /* ---------- 4. 공통 Fade-up (기존 .reveal 대체) ---------- */
   var revealEls = gsap.utils.toArray('.reveal').filter(function (el) { return !el.closest('.main-hero'); });
@@ -56,16 +114,23 @@
 
   var mm = gsap.matchMedia();
 
-  /* ---------- 5. 섹션 1 : 고정(Pin) + 다음 섹션이 위로 덮으며 전환 ---------- */
-  var hero = document.querySelector('.main-hero');
-  if (hero) {
-    ScrollTrigger.create({ trigger: hero, start: 'top top', pin: true, pinSpacing: false });
+  /* ---------- 5. 섹션 1 → 2, 섹션 2 → 3 : 고정(Pin) + 다음 섹션이 위로 덮으며 어두워지는 전환 ---------- */
+  var stackOver = function (section) {
+    // 화면보다 긴 섹션은 하단이 화면 하단에 닿을 때 고정 (내용이 잘리지 않도록)
+    var start = function () { return section.offsetHeight > window.innerHeight ? 'bottom bottom' : 'top top'; };
+    var end = function () { return '+=' + Math.min(section.offsetHeight, window.innerHeight); };
+    ScrollTrigger.create({ trigger: section, start: start, end: end, pin: true, pinSpacing: false, invalidateOnRefresh: true });
+    // 다음 섹션이 올라오는 동안 점점 어두워짐 (0 → 0.9) + 텍스트 페이드아웃
     gsap.timeline({
-      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true }
+      scrollTrigger: { trigger: section, start: start, end: end, scrub: 0.5, invalidateOnRefresh: true }
     })
-      .to(hero, { '--dim': 0.75, ease: 'none' }, 0)
-      .to(hero.querySelector('.inner'), { autoAlpha: 0, ease: 'none' }, 0);
-  }
+      .to(section, { '--dim': 0.9, ease: 'power1.in', duration: 1 }, 0)
+      .to(section.querySelector('.inner'), { autoAlpha: 0, ease: 'none', duration: 0.6 }, 0);
+  };
+  ['.main-hero', '.main-about'].forEach(function (sel) {
+    var section = document.querySelector(sel);
+    if (section) stackOver(section);
+  });
 
   /* ---------- 6. 섹션 2 : 임시 비주얼 패럴랙스 ---------- */
   var aboutVisual = document.querySelector('.main-about .about-visual');
@@ -76,7 +141,14 @@
     });
   }
 
-  /* ---------- 7. 섹션 3 : 서비스 카드 순차 등장 + 비주얼 패럴랙스 ---------- */
+  /* ---------- 7. 섹션 3 : 배경 이미지 제자리 페이드인 + 서비스 카드 순차 등장 ---------- */
+  var serviceSection = document.querySelector('.main-service');
+  if (serviceSection) {
+    gsap.fromTo(serviceSection, { '--bg-op': 0 }, {
+      '--bg-op': 1, duration: 1.8, ease: 'power2.inOut',
+      scrollTrigger: { trigger: serviceSection, start: 'top 70%', toggleActions: 'play none none reverse' }
+    });
+  }
   var serviceCards = gsap.utils.toArray('.service-list li');
   if (serviceCards.length) {
     gsap.from(serviceCards, {
@@ -99,7 +171,7 @@
     mm.add('(min-width: 1025px)', function () {
       pfSection.classList.add('is-scrub');
       var distance = function () { return pfViewport.scrollWidth - pfViewport.clientWidth; };
-      gsap.to(pfViewport, {
+      var pfTween = gsap.to(pfViewport, {
         scrollLeft: distance, ease: 'none',
         scrollTrigger: {
           trigger: pfSection, start: 'center center',
@@ -107,7 +179,9 @@
           pin: true, scrub: 0.8, invalidateOnRefresh: true
         }
       });
-      return function () { pfSection.classList.remove('is-scrub'); pfViewport.scrollLeft = 0; };
+      // 드래그 시 스크롤 위치와 동기화하기 위해 main.js 에 전달
+      pfViewport._pfScrub = { st: pfTween.scrollTrigger, distance: distance };
+      return function () { pfSection.classList.remove('is-scrub'); pfViewport.scrollLeft = 0; delete pfViewport._pfScrub; };
     });
   }
 
