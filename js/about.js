@@ -158,6 +158,16 @@
     var pbCards = toArr(pb.querySelectorAll('.pb-list li'));
     var PB_SCALE = 1.55; // 처음 가운데 타이틀 크기 (박스 안 타이틀 대비)
 
+    // 타이틀 : 스크롤 연동 타이핑 (글자 수를 스크롤 진행률에 1:1 로 맞춤, 히어로 서브문구와 동일한 방식)
+    // 글자 단위 wrap은 1회만 해야 하므로 mm.add 콜백 밖(= 화면 폭이 바뀌어도 재실행되지 않는 범위)에서 실행
+    var titleTyping = createTyping(pbTitle);
+    var titleProxy = { p: 0 };
+    var TITLE_START = 0.2;
+    var titleDur = titleTyping.count * 0.03;
+    var SUB_START = TITLE_START + titleDur + 0.25; // 타이핑이 끝나고 잠깐 멈춘 뒤 서브 문구 등장
+    var SUB_DUR = 0.5;
+    var BOX_START = SUB_START + SUB_DUR + 0.5;     // 서브 문구가 보인 채 잠깐 머문 뒤 박스로 축소 이동 (기존 2.3 위치)
+
     mm.add('(min-width: 1025px)', function () {
       // 박스(최종 위치)를 기준으로 '화면 가운데 큰 타이틀' 위치를 역산 (transform 영향 없는 offset 값 사용)
       // 박스에 transform 이 걸리면 타이틀의 offsetParent 가 박스로 바뀌므로 안쪽 여백은 padding 값으로 계산
@@ -174,18 +184,20 @@
       };
 
       var pbTl = gsap.timeline()
-        // ① 서브 문구 5줄 순차 등장 (줄당 약 0.35화면)
-        .fromTo(pbIntro.children, { y: 26, autoAlpha: 0 }, { y: 0, autoAlpha: 1, ease: 'power2.out', duration: 0.4, stagger: 0.35 }, 0.2)
-        // ② 타이틀 + 문구가 좌측 박스로 축소 이동 (1.1화면)
+        // ① 타이틀 타이핑
+        .fromTo(titleProxy, { p: 0 }, { p: 1, ease: 'none', duration: titleDur, onUpdate: function () { titleTyping.setProgress(titleProxy.p); } }, TITLE_START)
+        // ② 서브 문구 5줄 한번에 등장 (개별 stagger 없이 전체를 하나로 페이드인)
+        .fromTo(pbIntro, { y: 26, autoAlpha: 0 }, { y: 0, autoAlpha: 1, ease: 'power2.out', duration: SUB_DUR }, SUB_START)
+        // ③ 타이틀 + 문구가 좌측 박스로 축소 이동 (1.1화면)
         .fromTo(pbHead,
           { x: startX, y: startY, scale: PB_SCALE, transformOrigin: '0 0', backgroundColor: 'rgba(13, 17, 36, 0)', color: '#222' },
-          { x: 0, y: 0, scale: 1, backgroundColor: 'rgba(13, 17, 36, 1)', color: '#fff', ease: 'power3.inOut', duration: 1.1 }, 2.3)
-        .fromTo(pbLines, { x: centerShift(pbLines) }, { x: 0, ease: 'power3.inOut', duration: 1.1 }, 2.3)
-        .fromTo(pbTitle.querySelector('em'), { color: '#222' }, { color: '#2fd37f', ease: 'power2.inOut', duration: 0.8 }, 2.4)
-        .to(pbIntro, { x: function () { return -pbStage.clientWidth * 0.22; }, y: -40, scale: 0.7, autoAlpha: 0, ease: 'power2.in', duration: 0.6 }, 2.3)
-        .fromTo('.pb-sub', { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, ease: 'power2.out', duration: 0.4 }, 3.1)
-        // ③ 우측 카드 순차 등장 (카드당 약 0.55화면)
-        .fromTo(pbCards, { x: 90, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: 'power3.out', duration: 0.6, stagger: 0.55 }, 3.6)
+          { x: 0, y: 0, scale: 1, backgroundColor: 'rgba(13, 17, 36, 1)', color: '#fff', ease: 'power3.inOut', duration: 1.1 }, BOX_START)
+        .fromTo(pbLines, { x: centerShift(pbLines) }, { x: 0, ease: 'power3.inOut', duration: 1.1 }, BOX_START)
+        .fromTo(pbTitle.querySelector('em'), { color: '#222' }, { color: '#2fd37f', ease: 'power2.inOut', duration: 0.8 }, BOX_START + 0.1)
+        .to(pbIntro, { x: function () { return -pbStage.clientWidth * 0.22; }, y: -40, scale: 0.7, autoAlpha: 0, ease: 'power2.in', duration: 0.6 }, BOX_START)
+        .fromTo('.pb-sub', { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, ease: 'power2.out', duration: 0.4 }, BOX_START + 0.8)
+        // ④ 우측 카드 순차 등장 (카드당 약 0.55화면)
+        .fromTo(pbCards, { x: 90, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: 'power3.out', duration: 0.6, stagger: 0.55 }, BOX_START + 1.3)
         .to({}, { duration: 0.6 }); // 완성된 화면에서 머무름
 
       pinScrub(pb, pbTl, 2);

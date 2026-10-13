@@ -197,8 +197,9 @@ input, textarea, select { font: inherit; }
 
 /* ---------- Section 1 : Hero ---------- */
 .main-hero {
+  /* min-height/max-height 고정값 제거 : 사용자 해상도(뷰포트 높이)에 맞춰 섹션이 항상 화면에 꽉 차도록 함 */
   position: relative; display: flex; align-items: center;
-  height: 100vh; min-height: 760px; max-height: 1000px;
+  height: 100vh;
   background-color: #020202;
   color: #fff; overflow: hidden;
 }
@@ -780,6 +781,12 @@ body::-webkit-scrollbar { display: none; width: 0; height: 0; } /* Chrome · Edg
 /* 서브 문구 타이핑 효과 (js/about.js · 커서는 공통 .type-caret 사용) */
 .ab-hero-desc .char { visibility: hidden; }
 .ab-hero-desc .char.on { visibility: visible; }
+/* 섹션 2 타이틀 타이핑 효과 (js/about.js · 커서는 공통 .type-caret 사용)
+   PC(1025px 이상)에서만 타이핑 애니메이션이 동작하므로, 그 외 화면에서는 글자를 바로 전부 보여줌 */
+@media (min-width: 1025px) {
+  .pb-title .char { visibility: hidden; }
+  .pb-title .char.on { visibility: visible; }
+}
 /* 스크립트 실행 전 : 원형 마스크 + 텍스트 숨김 */
 .ab-anim .ab-hero-bg { clip-path: circle(max(110px, min(12.3vw, 25vh)) at 50% 50%); }
 .ab-anim .ab-hero-dim,
@@ -814,7 +821,7 @@ body::-webkit-scrollbar { display: none; width: 0; height: 0; } /* Chrome · Edg
   font-family: 'KIMM_Bold', 'Inter', sans-serif; font-size: 17px; line-height: 1;
 }
 .pb-list h3 { margin-top: 6px; font-size: 26px; font-weight: 700; line-height: 1.4; letter-spacing: -.03em; color: #222; }
-.pb-list p { margin-top: 18px; font-size: 15px; line-height: 1.5; color: #555; }
+.pb-list p { margin-top: 18px; font-size: 15px; line-height: 1.5; color: #555; text-wrap: balance; } /* 해상도별 줄바꿈이 고르게 : 수동 <br> 대신 자동 밸런스 */
 
 /* ---------- 섹션 3 : 핵심 가치 ---------- */
 .ab-value { position: relative; background: #fff; overflow: hidden; }
@@ -828,13 +835,15 @@ body::-webkit-scrollbar { display: none; width: 0; height: 0; } /* Chrome · Edg
 .vl-title .ln { display: block; width: fit-content; white-space: nowrap; }
 .vl-desc { margin-top: 26px; font-size: 16px; line-height: 1.75; color: #777; }
 .vl-thumb { display: none; }
-.vl-cards { position: relative; flex: none; display: flex; gap: 20px; }
+/* flex: none 대신 남는 폭을 정확히 채우도록(1 1 0) 해서, head(430px)+gap을 뺀 나머지 폭에 맞춰
+   카드 4장이 항상 꽉 차게 분배됨 → 어떤 해상도에서도 .ab-value 의 overflow:hidden 에 잘릴 일이 없음 */
+.vl-cards { position: relative; flex: 1 1 0; min-width: 0; display: flex; gap: 20px; }
 .vl-cards li {
-  position: relative; overflow: hidden; flex: none;
-  width: min(16.6vw, 318px); height: min(608px, 64vh); min-height: 420px;
+  position: relative; overflow: hidden; flex: 1 1 0;
+  max-width: 318px; height: min(608px, 64vh); min-height: 420px;
   background-color: var(--ph-2);
 }
-.vl-cards li:first-child { width: min(13.9vw, 266px); }
+.vl-cards li:first-child { flex: 0.84 1 0; max-width: 266px; } /* 원래 비율(266:318)만큼 살짝 좁게 */
 /* 4장의 카드가 하나의 사진을 나눠 보여주도록 (js/about.js 가 --off, --sw 지정) */
 .vl-img, .vl-thumb {
   background: var(--ph-2) url('../img/about_value_bg.jpg') center / cover no-repeat; /* 이미지를 넣으면 자동 적용 */
@@ -848,8 +857,8 @@ body::-webkit-scrollbar { display: none; width: 0; height: 0; } /* Chrome · Edg
 }
 .vl-txt strong { font-size: 44px; font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
 .vl-txt span {
-  padding: 9px 20px 10px; border-radius: 30px; background: #fff;
-  font-size: 15px; font-weight: 700; line-height: 1.2; color: #222; white-space: nowrap;
+  padding: 9px 20px 10px; border-radius: 30px; background: #fff; max-width: 100%;
+  font-size: 15px; font-weight: 700; line-height: 1.2; color: #222; text-wrap: balance; /* 카드가 좁아져도 잘리지 않고 2줄로 고르게 줄바꿈 */
 }
 
 /* ---------- 섹션 4 : CTA ---------- */
@@ -870,7 +879,7 @@ body::-webkit-scrollbar { display: none; width: 0; height: 0; } /* Chrome · Edg
 @media (min-width: 1025px) {
   .ab-anim .pb-intro-sub {
     display: block; position: absolute; left: 0; right: 0; top: calc(50% + 30px);
-    font-size: 16px; line-height: 1.7; color: #666; text-align: center; pointer-events: none;
+    font-size: 18px; line-height: 1.7; color: #666; text-align: center; pointer-events: none;
   }
   .ab-anim .pb-intro-sub .last { margin-top: 1.7em; }
   .ab-anim .vl-thumb { display: block; position: absolute; left: 0; top: 0; z-index: 0; visibility: hidden; }
@@ -892,7 +901,6 @@ body::-webkit-scrollbar { display: none; width: 0; height: 0; } /* Chrome · Edg
   .pb-head { padding-left: 36px; padding-right: 36px; }
   .pb-title { font-size: 27px; }
   .pb-list li { padding-left: 44px; padding-right: 40px; }
-  .pb-list p br { display: none; }
   .vl-head { width: 360px; }
   .vl-title { font-size: 42px; }
   .vl-txt strong { font-size: 36px; }
@@ -906,7 +914,7 @@ body::-webkit-scrollbar { display: none; width: 0; height: 0; } /* Chrome · Edg
   .vl-stage { flex-direction: column; align-items: flex-start; gap: 40px; min-height: 0; padding-top: 60px; padding-bottom: 60px; }
   .vl-head { width: auto; }
   .vl-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
-  .vl-cards li, .vl-cards li:first-child { width: auto; height: 340px; min-height: 0; }
+  .vl-cards li, .vl-cards li:first-child { width: auto; max-width: none; height: 340px; min-height: 0; }
 }
 @media (max-width: 768px) {
   .ab-hero { min-height: 560px; }
