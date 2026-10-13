@@ -47,7 +47,13 @@
     <!-- ===== 섹션 1 : 인트로 (원형 마스크 → 전체 화면 확장) ===== -->
     <section class="ab-hero">
       <div class="ab-hero-bg" aria-hidden="true">
-        <div class="ab-hero-img"></div><!-- 배경 이미지 : img/about_hero_bg.jpg -->
+        <div class="ab-hero-img">
+          <!-- 배경 동영상 (재생 전·모션 최소화 설정 시 포스터 이미지 표시) -->
+          <video class="ab-hero-video js-lazy-video" muted loop playsinline preload="metadata" poster="video/about_hero_bg_poster.jpg" aria-hidden="true">
+            <source src="video/about_hero_bg_m.mp4" type="video/mp4" media="(max-width: 768px)">
+            <source src="video/about_hero_bg.mp4" type="video/mp4">
+          </video>
+        </div>
         <div class="ab-hero-dim"></div>
       </div>
       <div class="inner">

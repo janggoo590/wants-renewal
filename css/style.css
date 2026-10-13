@@ -745,9 +745,10 @@ body::-webkit-scrollbar { display: none; width: 0; height: 0; } /* Chrome · Edg
 .ab-hero-bg { position: absolute; inset: 0; overflow: hidden; background-color: var(--ph-2); }
 .ab-hero-img {
   position: absolute; inset: 0;
-  background: url('../img/about_hero_bg.jpg') center / cover no-repeat; /* 이미지를 넣으면 자동 적용 */
+  background: url('../video/about_hero_bg_poster.jpg') center / cover no-repeat; /* 동영상 재생 전 포스터 */
   will-change: transform;
 }
+.ab-hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .ab-hero-dim { position: absolute; inset: 0; background: rgba(0, 0, 0, .3); }
 .ab-hero .inner { position: relative; z-index: 2; height: 100%; color: #fff; pointer-events: none; } /* 헤더 테마 감지가 배경을 읽도록 */
 .ab-hero-title {
@@ -785,7 +786,12 @@ body::-webkit-scrollbar { display: none; width: 0; height: 0; } /* Chrome · Edg
 .ab-anim .ab-hero-title, .ab-anim .ab-hero-copy, .ab-anim .ab-hero-desc { opacity: 0; }
 
 /* ---------- 섹션 2 : 문제 제기 ---------- */
-.ab-problem { position: relative; background: #fff; }
+.ab-problem { position: relative; z-index: 2; background: #fff; } /* 고정된 섹션 1 위로 올라와 덮음 */
+/* 섹션 1 → 2 전환 : 덮이는 동안 어두워짐 (js/about.js 가 --dim 조절) */
+.ab-hero::after {
+  content: ''; position: absolute; inset: 0; z-index: 3;
+  background: #000; opacity: var(--dim, 0); pointer-events: none;
+}
 .pb-stage {
   position: relative;
   display: grid; grid-template-columns: 39% 1fr; gap: 44px; align-items: start; align-content: center;
