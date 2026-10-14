@@ -170,6 +170,25 @@ document.addEventListener('DOMContentLoaded', function () {
       track.style.transform = 'translateX(' + (-step * index) + 'px)';
       prev.disabled = index === 0;
       next.disabled = index >= maxIndex();
+      updateBar();
+    }
+
+    /* 스크롤 바 : PC(스크롤 고정 가로 이동)는 viewport.scrollLeft, 모바일/태블릿은 index 기준으로 위치 표시 */
+    var bar = slider.querySelector('.pf-bar');
+    var barThumb = bar && bar.querySelector('.pf-bar-thumb');
+    function stepSize() { return items[0].offsetWidth + parseFloat(getComputedStyle(track).gap || 0); }
+    function barState(offset) {
+      var vp = slider.querySelector('.pf-viewport');
+      var scrub = vp._pfScrub;
+      var max = scrub ? scrub.distance() : stepSize() * maxIndex();
+      var pos = offset != null ? offset : (scrub ? vp.scrollLeft : stepSize() * index);
+      return { max: max, progress: max > 0 ? Math.min(1, Math.max(0, pos / max)) : 0 };
+    }
+    function updateBar(offset) {
+      if (!bar) return;
+      var s = barState(offset);
+      var thumbW = barThumb.offsetWidth; // 막대 길이는 CSS 고정 비율 (.pf-bar-thumb width)
+      barThumb.style.transform = 'translateX(' + (bar.clientWidth - thumbW) * s.progress + 'px)';
     }
     prev.addEventListener('click', function () { index = Math.max(0, index - 1); move(); });
     next.addEventListener('click', function () { index = Math.min(maxIndex(), index + 1); move(); });
@@ -220,6 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var base = -drag.step * drag.startIndex;
         track.style.transition = 'none';
         track.style.transform = 'translateX(' + (base + dx) + 'px)';
+        if (bar) { bar.classList.add('is-dragging'); updateBar(-(base + dx)); }
       }
     });
 
@@ -231,6 +251,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (moved === 0 && Math.abs(dx) > drag.step * 0.2) moved = dx < 0 ? 1 : -1; // 짧게 밀어도 한 칸 이동
         index = Math.min(maxIndex(), Math.max(0, drag.startIndex + moved));
         track.style.transition = '';
+        if (bar) bar.classList.remove('is-dragging');
         move();
       }
       viewport.classList.remove('is-dragging');
@@ -243,6 +264,56 @@ document.addEventListener('DOMContentLoaded', function () {
     viewport.addEventListener('click', function (e) {
       if (dragged) { e.preventDefault(); e.stopPropagation(); dragged = false; }
     }, true);
+
+    /* 스크롤 바 연동 : PC 는 스크롤에 따라 viewport.scrollLeft 가 바뀌므로 scroll 이벤트로 갱신 */
+    if (bar) {
+      viewport.addEventListener('scroll', function () { updateBar(); }, { passive: true });
+      window.addEventListener('load', function () { updateBar(); }); // PC 가로 이동 모드(js/scroll.js) 설정 후 막대 폭 재계산
+
+      // 스크롤 바 클릭 / 드래그로 이동 (막대 가운데를 포인터 위치로)
+      var barDrag = null;
+      var barTo = function (clientX, done) {
+        var r = bar.getBoundingClientRect();
+        var s = barState();
+        var thumbW = barThumb.offsetWidth;
+        var p = Math.min(1, Math.max(0, (clientX - r.left - thumbW / 2) / ((r.width - thumbW) || 1)));
+        var scrub = viewport._pfScrub;
+        if (scrub) {
+          // PC : 해당 위치가 되도록 페이지 스크롤을 이동 (고정 구간과 동기화)
+          var st = scrub.st;
+          var y = window.scrollY + (p * s.max - viewport.scrollLeft) * scrub.ratio();
+          y = Math.min(st.end, Math.max(st.start, y));
+          if (window.lenis) window.lenis.scrollTo(y, { immediate: !!barDrag && !done });
+          else window.scrollTo(0, y);
+        } else if (done) {
+          index = Math.round(p * maxIndex());
+          track.style.transition = '';
+          bar.classList.remove('is-dragging');
+          move();
+        } else {
+          track.style.transition = 'none';
+          track.style.transform = 'translateX(' + (-p * s.max) + 'px)';
+          updateBar(p * s.max);
+        }
+      };
+      bar.addEventListener('pointerdown', function (e) {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        barDrag = { id: e.pointerId };
+        bar.classList.add('is-dragging');
+        try { bar.setPointerCapture(e.pointerId); } catch (err) {}
+      });
+      bar.addEventListener('pointermove', function (e) {
+        if (barDrag && e.pointerId === barDrag.id) barTo(e.clientX, false);
+      });
+      var endBar = function (e) {
+        if (!barDrag || e.pointerId !== barDrag.id) return;
+        barTo(e.clientX, true);
+        barDrag = null;
+        bar.classList.remove('is-dragging');
+      };
+      bar.addEventListener('pointerup', endBar);
+      bar.addEventListener('pointercancel', endBar);
+    }
   }
 
   /* ---------- Sub : Portfolio Filter ---------- */

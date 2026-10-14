@@ -280,7 +280,7 @@
   });
 
   /* ---------- 11. 서브 비주얼 : 타이틀 패럴랙스 ---------- */
-  var subVisual = document.querySelector('.sub-visual');
+  var subVisual = document.querySelector('.sub-visual:not(.svc-visual)'); // SERVICES 섹션1은 js/services.js 의 스크롤 연출 사용
   if (subVisual) {
     gsap.to(subVisual.children, {
       y: 80, autoAlpha: 0, ease: 'none',
@@ -288,8 +288,8 @@
     });
   }
 
-  /* ---------- 12. 커스텀 커서 (마우스 사용 환경만) ---------- */
-  mm.add('(hover: hover) and (pointer: fine)', function () {
+  /* ---------- 12. 커스텀 커서 (마우스 사용 환경만 · body.default-cursor 페이지는 기본 커서 사용) ---------- */
+  if (!document.body.classList.contains('default-cursor')) mm.add('(hover: hover) and (pointer: fine)', function () {
     var cursor = document.createElement('div');
     cursor.className = 'cursor';
     document.body.appendChild(cursor);
