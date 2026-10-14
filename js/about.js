@@ -194,6 +194,8 @@
           { x: 0, y: 0, scale: 1, backgroundColor: 'rgba(13, 17, 36, 1)', color: '#fff', ease: 'power3.inOut', duration: 1.1 }, BOX_START)
         .fromTo(pbLines, { x: centerShift(pbLines) }, { x: 0, ease: 'power3.inOut', duration: 1.1 }, BOX_START)
         .fromTo(pbTitle.querySelector('em'), { color: '#222' }, { color: '#2fd37f', ease: 'power2.inOut', duration: 0.8 }, BOX_START + 0.1)
+        // 배경 동영상 : 박스로 전환되는 동안 스크롤에 맞춰 서서히 나타남 (최종 불투명도는 CSS .pb-bg 값과 동일)
+        .fromTo('.pb-bg', { opacity: 0 }, { opacity: 0.35, ease: 'power1.inOut', duration: 1.1 }, BOX_START)
         .to(pbIntro, { x: function () { return -pbStage.clientWidth * 0.22; }, y: -40, scale: 0.7, autoAlpha: 0, ease: 'power2.in', duration: 0.6 }, BOX_START)
         .fromTo('.pb-sub', { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, ease: 'power2.out', duration: 0.4 }, BOX_START + 0.8)
         // ④ 우측 카드 순차 등장 (카드당 약 0.55화면)

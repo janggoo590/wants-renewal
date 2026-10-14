@@ -66,6 +66,13 @@
 
     <!-- ===== 섹션 2 : 문제 제기 (가운데 타이틀 → 좌측 박스로 축소 + 우측 카드) ===== -->
     <section class="ab-problem">
+      <div class="pb-bg" aria-hidden="true">
+        <!-- 배경 동영상 (PC: video/about_problem_bg.mp4 / 모바일: _m.mp4) - 화면 근처에서만 재생 (js/main.js) -->
+        <video class="pb-bg-video js-lazy-video" muted loop playsinline preload="metadata" poster="video/about_problem_bg_poster.jpg" aria-hidden="true">
+          <source src="video/about_problem_bg_m.mp4" type="video/mp4" media="(max-width: 768px)">
+          <source src="video/about_problem_bg.mp4" type="video/mp4">
+        </video>
+      </div>
       <div class="inner pb-stage">
         <div class="pb-head">
           <h2 class="pb-title"><span class="ln">마케팅이 답답하다면</span><span class="ln"><em>어디에서 막히는지</em>부터 봅니다.</span></h2>
