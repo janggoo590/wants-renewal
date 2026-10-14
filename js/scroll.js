@@ -119,6 +119,12 @@
     }
   });
 
+  /* ---------- 4-1. FAQ 섹션 1 : 타이틀 → 서브 문구 → 설명 순서대로 아래에서 위로 등장 (페이지 진입 시) ---------- */
+  var faqIntro = gsap.utils.toArray('.faq-visual .inner > *');
+  if (faqIntro.length) {
+    gsap.from(faqIntro, { y: 60, autoAlpha: 0, duration: 1.1, ease: 'power3.out', stagger: 0.18, delay: 0.2 });
+  }
+
   var mm = gsap.matchMedia();
 
   /* ---------- 5. 섹션 1 → 2 → 3 → 4 : 고정(Pin) + 머무름 + 다음 섹션이 위로 덮으며 어두워지는 전환 ---------- */
