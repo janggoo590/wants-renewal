@@ -328,12 +328,22 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  /* ---------- Sub : FAQ Accordion ---------- */
+  /* ---------- Sub : FAQ Accordion (단일 오픈 : 새 질문을 열면 기존에 열린 답변은 닫힘) ---------- */
+  var faqItems = document.querySelectorAll('.faq-item');
+  var faqRefreshTimer;
+  var setFaqOpen = function (item, isOpen) {
+    item.classList.toggle('open', isOpen);
+    item.querySelector('.faq-q').setAttribute('aria-expanded', isOpen);
+  };
   document.querySelectorAll('.faq-q').forEach(function (q) {
     q.addEventListener('click', function () {
       var item = q.closest('.faq-item');
-      var isOpen = item.classList.toggle('open');
-      q.setAttribute('aria-expanded', isOpen);
+      var willOpen = !item.classList.contains('open');
+      faqItems.forEach(function (other) { if (other !== item) setFaqOpen(other, false); });
+      setFaqOpen(item, willOpen);
+      // 펼침 애니메이션(.45s)이 끝나 목록 높이가 바뀐 뒤 스크롤 연출 위치 재계산
+      clearTimeout(faqRefreshTimer);
+      faqRefreshTimer = setTimeout(function () { if (window.ScrollTrigger) window.ScrollTrigger.refresh(); }, 500);
     });
   });
 
@@ -358,5 +368,51 @@ document.addEventListener('DOMContentLoaded', function () {
       alert('문의가 접수되었습니다. (임시 화면 - 실제 전송 기능은 추후 연동 예정)');
       form.reset();
     });
+
+    // 신청 버튼 : 필수 입력(회사명/성함 · 연락처)과 개인정보 동의 체크가 모두 채워졌을 때만 활성화
+    var submitBtn = form.querySelector('[type="submit"]');
+    var requiredFields = form.querySelectorAll('[required]');
+    var updateSubmit = function () {
+      var ok = Array.prototype.every.call(requiredFields, function (el) {
+        return el.type === 'checkbox' ? el.checked : el.value.trim() !== '';
+      });
+      submitBtn.disabled = !ok;
+    };
+    form.addEventListener('input', updateSubmit);
+    form.addEventListener('change', updateSubmit);
+    form.addEventListener('reset', function () { setTimeout(updateSubmit, 0); }); // 초기화 후 다시 비활성화
+    updateSubmit();
+  }
+
+  /* ---------- Sub : Contact 문의 내용 Tip (마우스를 올리면 안내 카드 페이드인 · 치우면 페이드아웃) ----------
+     마우스 : hover / 키보드 : 포커스 / 터치 : 탭으로 열고 바깥을 탭하거나 Esc 로 닫기 */
+  var tip = document.querySelector('.ct-tip');
+  if (tip) {
+    var tipBtn = tip.querySelector('.ct-tip-btn');
+    var tipCard = tip.querySelector('.ct-tip-card');
+    var tipTimer;
+    // 카드가 화면 오른쪽 밖으로 나가면 그만큼 왼쪽으로 당김 (좌우 여백 16px)
+    var placeTip = function () {
+      tipCard.style.setProperty('--tip-shift', '0px');
+      var r = tipCard.getBoundingClientRect();
+      var over = r.right - (document.documentElement.clientWidth - 16);
+      var shift = over > 0 ? -over : 0;
+      if (r.left + shift < 16) shift = 16 - r.left;
+      tipCard.style.setProperty('--tip-shift', shift + 'px');
+    };
+    var showTip = function () { clearTimeout(tipTimer); placeTip(); tip.classList.add('is-show'); };
+    var hideTip = function (delay) {
+      clearTimeout(tipTimer);
+      tipTimer = setTimeout(function () { tip.classList.remove('is-show'); }, delay || 0);
+    };
+    tip.addEventListener('pointerenter', function (e) { if (e.pointerType !== 'touch') showTip(); });
+    tip.addEventListener('pointerleave', function (e) { if (e.pointerType !== 'touch') hideTip(120); }); // 커서가 문구 → 카드로 옮겨가는 순간 깜빡이지 않도록 약간 지연
+    tipBtn.addEventListener('focus', function () { if (tipBtn.matches(':focus-visible')) showTip(); }); // 키보드 이동 시
+    tipBtn.addEventListener('blur', function () { if (!tip.matches(':hover')) hideTip(); });
+    tipBtn.addEventListener('pointerup', function (e) { // 터치 : 탭할 때마다 열기 / 닫기
+      if (e.pointerType === 'touch') tip.classList.contains('is-show') ? hideTip() : showTip();
+    });
+    document.addEventListener('pointerdown', function (e) { if (!tip.contains(e.target)) hideTip(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hideTip(); });
   }
 });
