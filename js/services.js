@@ -1,6 +1,6 @@
 /* =========================================================
    WANTS Renewal - SERVICES 페이지 (services.html 전용)
-   - 서비스 탭 : 탭을 누르면 해당 패널만 표시
+   - 서비스 탭 : 섹션 2·3 은 공통 틀 1개 → 탭을 누르면 SERVICE_DATA 의 문구만 페이드로 교체
    - 메인 페이지 서비스 카드(services.html#svc01 ~ #svc07)로 들어오면 해당 탭을 열고 탭 위치로 이동
    - 섹션 1 : 화면을 고정하고 스크롤에 따라 문구가 차례로 등장
    - 섹션 3 : 선택한 탭의 산출물 표시 + 카드가 스크롤에 따라 가로 이동 (점선 스크롤 바 연동)
@@ -49,13 +49,107 @@
   });
 })();
 
+/* ---------- 서비스별 문구 데이터 ----------
+   섹션 2(라벨·타이틀·안내 박스·카드 3개)와 섹션 3(산출물 6개)는 HTML 에 공통 틀 1개만 두고,
+   탭을 누르면 이 데이터에서 문구를 찾아 data-svc-field="경로" 자리에 넣음
+   (예 : data-svc-field="focus.1.0" → focus[1][0]) · 키(svc01 ~ svc07)는 탭의 data-svc, 주소 해시(#svc01)와 같음
+   문구 수정은 여기서, 디자인 수정은 services.html / css 의 공통 틀 하나만 고치면 7개 서비스에 모두 적용됨 */
+var SERVICE_DATA = {
+    svc01: {
+      label: 'AI SEARCH STRATEGY',
+      title: '검색부터 AI 답변까지<br>브랜드 정보를 <span class="t-green">하나</span>로 연결',
+      summaryTitle: 'SEO가 기반이고 AEO·GEO는 그 위에 확장됩니다.',
+      summary: '검색엔진이 사이트를 이해하는 구조, 고객 질문에 바로 답하는 콘텐츠, 생성형 AI가 브랜드와 서비스를 정확히 이해하도록 만드는 정보를 함께 정리합니다.',
+      focus: [
+        ['검색 기반', '페이지 제목, 설명, 헤딩, 내부 링크, 인덱싱 등 검색 기본 구조를 점검합니다.'],
+        ['질문형 콘텐츠', '실제 고객이 묻는 질문을 기준으로 FAQ, 비교형, 정보형 콘텐츠를 설계합니다.'],
+        ['브랜드 정보', '회사명, 서비스, 지역, 전문 분야가 홈페이지·블로그·플레이스에서 다르게 보이지 않도록 정리합니다.']
+      ],
+      deliver: ['SEO/AEO/GEO 진단', '키워드·질문 맵', 'FAQ·콘텐츠 기획', '구조화 데이터', '채널 정보 정합성', '월별 개선 리포트']
+    },
+    svc02: {
+      label: 'WEBSITE',
+      title: '보기 좋은 홈페이지보다<br>이해되고 선택되는 홈페이지',
+      summaryTitle: '메인은 짧게, 상세는 설득력 있게.',
+      summary: '브랜드 메시지와 핵심 서비스는 메인에서 빠르게 이해시키고, 필요한 정보는 상세페이지에서 충분히 설명해 문의로 이어지도록 설계합니다.',
+      focus: [
+        ['정보 구조', 'ABOUT, SERVICES, PORTFOLIO, FAQ, CONTACT의 역할을 분리해 필요한 정보를 빨리 찾게 합니다.'],
+        ['검색 기반', 'SEO 기본 세팅과 AEO·GEO에 필요한 질문형 정보, 구조화 데이터를 함께 고려합니다.'],
+        ['전환 동선', '전화, 문의, 상담 등 실제 행동으로 이어지는 CTA를 페이지 흐름에 맞게 배치합니다.']
+      ],
+      deliver: ['사이트맵', '메인/상세 설계', '카피라이팅', '반응형 디자인', 'SEO 기본 세팅', '문의 전환 동선']
+    },
+    svc03: {
+      label: 'NAVER BLOG',
+      title: '키워드만 반복하지 않고<br>고객 질문에 답하는 콘텐츠',
+      summaryTitle: '발행 수보다 검색 의도와 정보의 질을 봅니다.',
+      summary: '대표 키워드, 지역 키워드, 세부 키워드, 실제 상담 질문을 나눠 콘텐츠를 기획하고 전문성과 신뢰를 쌓는 글을 축적합니다.',
+      focus: [
+        ['키워드 구조', '대표·지역·세부·질문 키워드를 목적별로 나눠 한쪽에 치우치지 않게 운영합니다.'],
+        ['콘텐츠 품질', '같은 말을 반복하기보다 실제 사례, 비교, FAQ, 전문 정보를 다르게 구성합니다.'],
+        ['모바일 가독성', '짧은 문단, 명확한 소제목, 핵심 답변 우선 구조로 읽기 쉽게 만듭니다.']
+      ],
+      deliver: ['월간 콘텐츠 캘린더', '블로그 원고', '대표·상세 이미지', '키워드 맵', 'FAQ형 콘텐츠', '운영 리포트']
+    },
+    svc04: {
+      label: 'LOCAL SEARCH',
+      title: '가까운 고객이 찾을 때<br>정확한 정보를 빠르게 보여줍니다.',
+      summaryTitle: '플레이스는 지역 검색의 첫인상입니다.',
+      summary: '주소와 영업시간만 맞추는 수준을 넘어 서비스, 대표 이미지, 소개, 소식, 예약·전화까지 방문 전 필요한 정보를 정리합니다.',
+      focus: [
+        ['기본 정보', '상호, 주소, 전화, 영업시간, 서비스 정보를 최신 상태로 맞춥니다.'],
+        ['소개·이미지', '처음 보는 고객이 어떤 곳인지 바로 이해하도록 소개글과 대표 이미지를 정리합니다.'],
+        ['전환 정보', '전화, 길찾기, 예약처럼 실제 방문과 상담으로 이어지는 요소를 점검합니다.']
+      ],
+      deliver: ['플레이스 진단', '소개글 개선', '대표 이미지 구성', '소식 콘텐츠', '정보 정합성 점검', '운영 리포트']
+    },
+    svc05: {
+      label: 'SOCIAL CONTENT',
+      title: '브랜드의 분위기와 경험을<br>한눈에 보이게 만듭니다.',
+      summaryTitle: 'SNS는 ‘우리가 어떤 회사인지’를 빠르게 보여주는 채널입니다.',
+      summary: '정보, 사례, 사람, 제품, 분위기를 적절히 섞어 브랜드를 입체적으로 보여주고, 카드뉴스·릴스·숏폼을 목적에 맞게 기획합니다.',
+      focus: [
+        ['콘텐츠 축', '정보형, 사례형, 브랜드형, 프로모션형 콘텐츠 비율을 정합니다.'],
+        ['비주얼 톤', '썸네일과 카드뉴스, 영상의 톤을 맞춰 브랜드가 기억되게 합니다.'],
+        ['숏폼', '짧은 시간에 강점이 보이도록 장면, 멘트, 자막을 기획합니다.']
+      ],
+      deliver: ['SNS 캘린더', '피드 디자인', '카드뉴스', '릴스·숏폼', '캡션·해시태그', '촬영 가이드']
+    },
+    svc06: {
+      label: 'VIDEO CONTENT',
+      title: '설명하기 어려운 강점을<br>영상으로 빠르게 이해시킵니다.',
+      summaryTitle: '한 번 촬영한 원본을 여러 콘텐츠로 확장합니다.',
+      summary: '브랜드 소개, 제품 특장점, 인터뷰, 행사 스케치 등을 목적에 맞게 기획하고 긴 영상에서 상세 영상, 숏폼까지 재가공할 수 있게 설계합니다.',
+      focus: [
+        ['메시지 우선', '누구에게 무엇을 보여줄지 먼저 정하고 장면과 스토리를 구성합니다.'],
+        ['제품·서비스 표현', '글로 설명하기 어려운 특장점을 촬영과 그래픽으로 보여줍니다.'],
+        ['멀티 포맷', '메인 홍보영상, 2~3분 영상, 30초 숏폼처럼 채널별로 재가공합니다.']
+      ],
+      deliver: ['영상 기획안', '스토리보드', '메인 홍보영상', '상세 영상', '숏폼', '썸네일·자막']
+    },
+    svc07: {
+      label: 'PERFORMANCE MARKETING',
+      title: '광고비보다 먼저<br>어떤 검색어에서 전환할지 봅니다.',
+      summaryTitle: '광고와 콘텐츠를 따로 보지 않습니다.',
+      summary: '검색광고에서 실제로 들어오는 검색어와 전환 데이터를 확인하고, 광고문구·랜딩페이지·콘텐츠가 같은 의도에 맞춰지도록 조정합니다.',
+      focus: [
+        ['키워드 분류', '브랜드, 일반, 지역, 문제형 검색어를 목적별로 나눕니다.'],
+        ['랜딩 연결', '검색어와 광고문구, 랜딩페이지의 핵심 메시지를 맞춥니다.'],
+        ['데이터 활용', '실제 검색어와 전환 데이터를 블로그·홈페이지 콘텐츠 개선에도 활용합니다.']
+      ],
+      deliver: ['키워드 구조안', '광고그룹·문구', '랜딩 개선안', '예산 운영안', '전환 리포트', '검색어 기반 콘텐츠 제안']
+    }
+};
+
 /* ---------- 섹션 2 : 서비스 탭 ---------- */
 (function () {
   var tabWrap = document.querySelector('.svc-tabs');
   if (!tabWrap) return;
   var tabs = Array.prototype.slice.call(tabWrap.querySelectorAll('.svc-tab'));
-  var panes = Array.prototype.slice.call(document.querySelectorAll('.svc-pane'));
-  var delivers = Array.prototype.slice.call(document.querySelectorAll('.svc-deliver[data-pane]')); // 섹션 3 산출물 (탭과 연동)
+  var pane = document.getElementById('svcPane');
+  var deliverList = document.getElementById('svcDeliver'); // 섹션 3 산출물 (탭과 연동)
+  var fields = Array.prototype.slice.call(document.querySelectorAll('[data-svc-field]'));
+  var current = (tabWrap.querySelector('.svc-tab.on') || tabs[0]).getAttribute('data-svc'); // HTML 기본 내용 = 첫 탭
 
   /* 탭 버튼 줄 : 섹션 2·3 은 화면 고정(pin) 구간이 있어 sticky 로는 섹션 밖까지 따라갈 수 없으므로
      원래 자리에 같은 높이의 자리표시(holder)를 두고 버튼 줄은 화면 위에 띄움(.is-float)
@@ -66,6 +160,9 @@
   document.body.appendChild(tabWrap);
   tabWrap.classList.add('is-float');
   var ctaSec = document.querySelector('.svc-cta');
+  var tabsSec = holder.closest('section');
+  var outSec = document.querySelector('.svc-output');
+  var lastBand = '';
   var headerH = function () { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0; };
   var lastTop = null;
   function placeTabs() {
@@ -74,6 +171,17 @@
     if (top !== lastTop) { tabWrap.style.top = top + 'px'; lastTop = top; }
     var hide = !!ctaSec && ctaSec.getBoundingClientRect().top < window.innerHeight - 100; // 문의 섹션이 화면에 보이기 시작하면 숨김
     if (hide !== tabWrap.classList.contains('is-hidden')) tabWrap.classList.toggle('is-hidden', hide);
+    // 섹션 2 를 지나는 동안(헤더 아래 고정 · 섹션 3 이 아직 버튼 줄 아래에 있을 때) 섹션 배경색 띠로 내용이 비치지 않게 함
+    var band = top <= headerH() && !!outSec && outSec.getBoundingClientRect().top > top + tabWrap.offsetHeight;
+    // 섹션 3 부터(어두운 배경)는 버튼 줄 가운데 높이까지 올라오면 어두운 배경용 버튼으로
+    var dark = !!outSec && outSec.getBoundingClientRect().top < top + tabWrap.offsetHeight / 2;
+    if (dark !== tabWrap.classList.contains('is-dark')) tabWrap.classList.toggle('is-dark', dark);
+    if (band !== tabWrap.classList.contains('is-band')) tabWrap.classList.toggle('is-band', band);
+    if (band) { // 섹션 2 가 덮이며 어두워지는 정도(--dim)에 맞춰 띠 색도 함께 어둡게
+      var c = Math.round(255 * (1 - (parseFloat(getComputedStyle(tabsSec).getPropertyValue('--dim')) || 0)));
+      var col = 'rgb(' + c + ',' + c + ',' + c + ')';
+      if (col !== lastBand) { tabWrap.style.setProperty('--band', col); lastBand = col; }
+    }
   }
   placeTabs();
   if (window.gsap) gsap.ticker.add(placeTabs); // 매 프레임 (Lenis 부드러운 스크롤·화면 고정 구간과 함께 정확히 맞춤)
@@ -89,28 +197,39 @@
     else window.scrollTo({ top: y, behavior: immediate ? 'auto' : 'smooth' });
   }
 
+  // 공통 틀의 data-svc-field 자리에 해당 서비스 문구 채우기
+  function fill(item) {
+    fields.forEach(function (el) {
+      var value = el.getAttribute('data-svc-field').split('.').reduce(function (v, key) { return v == null ? v : v[key]; }, item);
+      if (value != null) el.innerHTML = value; // 타이틀의 <br>·강조 span 포함
+    });
+  }
+  // 문구 교체 : 페이드아웃 → 교체 → 페이드인 (animate:false 면 바로 교체)
+  var SWITCH_MS = 280; // css .is-switching 전환 시간과 같게
+  var switchTimer = null;
+  function render(id, animate) {
+    var boxes = [pane, deliverList].filter(Boolean);
+    clearTimeout(switchTimer);
+    var apply = function () {
+      fill(SERVICE_DATA[id]);
+      boxes.forEach(function (box) { box.classList.remove('is-switching'); });
+      if (window.ScrollTrigger) window.ScrollTrigger.refresh(); // 문구 길이에 따라 높이가 바뀌므로 스크롤 연출 위치 재계산
+    };
+    if (!animate) { apply(); return; }
+    boxes.forEach(function (box) { box.classList.add('is-switching'); });
+    switchTimer = setTimeout(apply, SWITCH_MS);
+  }
+
   function select(id, opt) {
     opt = opt || {};
-    var found = false;
+    if (!SERVICE_DATA[id]) return false;
     tabs.forEach(function (tab) {
-      var on = tab.getAttribute('aria-controls') === id;
-      if (on) found = true;
+      var on = tab.getAttribute('data-svc') === id;
       tab.classList.toggle('on', on);
       tab.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-    if (!found) return false;
-    panes.forEach(function (pane) {
-      var on = pane.id === id;
-      pane.classList.toggle('on', on);
-      pane.hidden = !on;
-    });
-    delivers.forEach(function (list) {
-      var on = list.getAttribute('data-pane') === id;
-      list.classList.toggle('on', on);
-      list.hidden = !on;
-    });
+    if (id !== current) { render(id, opt.animate !== false); current = id; }
     if (history.replaceState) history.replaceState(null, '', '#' + id);
-    if (window.ScrollTrigger) window.ScrollTrigger.refresh(); // 패널 높이가 바뀌므로 스크롤 연출 위치 재계산
     if (opt.scroll) scrollToTabs(opt.immediate);
     return true;
   }
@@ -118,16 +237,15 @@
   tabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
       // 패널 내용을 내려 읽던 중이면(패널 시작이 고정 탭 아래로 가려짐) 새 패널의 시작 위치로 이동
-      var cur = document.querySelector('.svc-pane.on');
-      var readDown = cur && cur.getBoundingClientRect().top < tabWrap.getBoundingClientRect().bottom;
-      select(tab.getAttribute('aria-controls'), { scroll: readDown });
+      var readDown = pane.getBoundingClientRect().top < tabWrap.getBoundingClientRect().bottom;
+      select(tab.getAttribute('data-svc'), { scroll: readDown });
       tab.scrollIntoView({ block: 'nearest', inline: 'center' }); // 모바일 : 가로 스크롤 탭에서 선택한 탭이 보이도록
     });
   });
 
   // 메인 페이지 카드 링크로 들어온 경우 (#svc01 ~ #svc07)
   var hash = location.hash.replace('#', '');
-  if (hash && select(hash)) {
+  if (hash && select(hash, { animate: false })) {
     window.addEventListener('load', function () { setTimeout(function () { scrollToTabs(true); }, 50); });
   }
 })();
@@ -176,10 +294,10 @@
   stackOver(document.querySelector('.svc-output'), 2);
 
   /* 섹션 2 : 선택된 서비스 내용 순차 등장 (영역에 들어오면 한 번 재생)
-     ① 라벨·타이틀 → ② 안내 박스 → ③ 플러스 기호 → ④ 카드 3개를 0.18초 간격으로 왼쪽부터
+     ① 라벨·타이틀 → ② 안내 박스 (0.32초 간격) → ③ 플러스 기호 → ④ 카드 3개를 0.3초 간격으로 왼쪽부터
      위쪽(타이틀·안내 박스)과 아래쪽(플러스·카드)은 각각 화면에 들어올 때 재생 (긴 영역이 화면 밖에서 미리 끝나지 않도록)
-     등장 전 탭을 바꾸면 새 패널은 기존 탭 전환 효과(svcPaneIn)로 바로 보임 */
-  var activePane = document.querySelector('.svc-pane.on');
+     (공통 틀이라 탭을 바꿔도 같은 요소 · 문구만 바뀜) */
+  var activePane = document.getElementById('svcPane');
   if (activePane) {
     var paneTop = gsap.utils.toArray(activePane.querySelectorAll('.svc-headline .sec-label, .svc-headline h3, .svc-summary'));
     var panePlus = activePane.querySelector('.svc-plus');
@@ -189,15 +307,15 @@
     ScrollTrigger.create({
       trigger: activePane.querySelector('.svc-headline'), start: 'top 85%', once: true, refreshPriority: 3.5,
       onEnter: function () {
-        gsap.to(paneTop, { y: 0, autoAlpha: 1, duration: 1.1, ease: 'power3.out', stagger: 0.18 });
+        gsap.to(paneTop, { y: 0, autoAlpha: 1, duration: 1.6, ease: 'power3.out', stagger: 0.32 });
       }
     });
     ScrollTrigger.create({
       trigger: panePlus || paneCards[0], start: 'top 88%', once: true, refreshPriority: 3.5,
       onEnter: function () {
         var tl = gsap.timeline();
-        if (panePlus) tl.to(panePlus, { scale: 1, rotate: 0, autoAlpha: 1, duration: 0.8, ease: 'back.out(1.6)' });
-        tl.to(paneCards, { y: 0, autoAlpha: 1, duration: 1, ease: 'power3.out', stagger: 0.18 }, panePlus ? '-=0.35' : 0);
+        if (panePlus) tl.to(panePlus, { scale: 1, rotate: 0, autoAlpha: 1, duration: 1.2, ease: 'back.out(1.4)' });
+        tl.to(paneCards, { y: 0, autoAlpha: 1, duration: 1.5, ease: 'power3.out', stagger: 0.3 }, panePlus ? '-=0.4' : 0);
       }
     });
   }
@@ -206,18 +324,17 @@
      박스 영역(.svc-output-top)을 타이틀이 탭 버튼 줄 아래에 오도록 고정
      → 타이틀·설명은 화면 가운데에서 시작해, 박스가 왼쪽부터 하나씩 떠오르는 동안 원래 자리로 밀려 올라감
      → 마지막 박스까지 나타난 뒤 잠시 머물고 고정 해제. 방금 다 나타난 박스는 강조(.on = 마우스 올렸을 때 모습)
-     선택한 탭의 목록만 보이므로 7개 목록을 같은 타이밍으로 함께 진행 (탭을 바꿔도 같은 진행 상태) */
+     (공통 목록 1개 · 탭을 바꾸면 문구만 바뀌고 진행 상태는 그대로) */
   var outTop = document.querySelector('.svc-output-top');
-  var deliverLists = gsap.utils.toArray('.svc-deliver');
-  if (outTop && deliverLists.length) {
+  var deliverList = document.getElementById('svcDeliver');
+  if (outTop && deliverList) {
     var outTitle = outTop.querySelector('.svc-output-title');
     var outDesc = outTop.querySelector('.svc-output-desc');
-    var deliverCount = deliverLists[0].children.length;
+    var deliverItems = gsap.utils.toArray(deliverList.children);
+    var deliverCount = deliverItems.length;
     var CARD_START = 0.4, CARD_GAP = 0.6; // 박스 등장 시작 시점 · 박스 간 간격 (박스 하나당 duration 1)
     var setActiveDeliver = function (idx) {
-      deliverLists.forEach(function (list) {
-        Array.prototype.forEach.call(list.children, function (li, k) { li.classList.toggle('on', k === idx); });
-      });
+      deliverItems.forEach(function (li, k) { li.classList.toggle('on', k === idx); });
     };
     var pad = function (side) { return parseFloat(getComputedStyle(outTop)['padding' + side]) || 0; };
     var headerH = function () { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0; };
@@ -233,12 +350,10 @@
       return Math.round((window.innerHeight - groupH) / 2 - (pinTop() + outTitle.offsetTop));
     };
 
-    gsap.set(gsap.utils.toArray('.svc-deliver li'), { y: 80, scale: 0.92, autoAlpha: 0 }); // 시작 상태
+    gsap.set(deliverItems, { y: 80, scale: 0.92, autoAlpha: 0 }); // 시작 상태
     var deliverTl = gsap.timeline();
     deliverTl.fromTo([outTitle, outDesc], { y: toCenter }, { y: 0, duration: 1.4, ease: 'power2.inOut' }, 0);
-    deliverLists.forEach(function (list) {
-      deliverTl.to(list.children, { y: 0, scale: 1, autoAlpha: 1, duration: 1, ease: 'power2.out', stagger: CARD_GAP }, CARD_START);
-    });
+    deliverTl.to(deliverItems, { y: 0, scale: 1, autoAlpha: 1, duration: 1, ease: 'power2.out', stagger: CARD_GAP }, CARD_START);
     deliverTl.to({}, { duration: 0.8 }); // 모두 나타난 상태로 잠시 머문 뒤 고정 해제
 
     ScrollTrigger.create({
@@ -303,7 +418,7 @@
   }
 
   /* 섹션 4 : 진행 과정 (화면 고정)
-     ① 배경 등장 (섹션 3 을 덮으며 올라오는 동안) → ② 그래픽 등장 → ③ 타이틀 등장 (그래픽·타이틀은 화면 가운데, 크게)
+     ① 배경과 함께 섹션 3 을 덮으며 올라옴 → ② 그래픽 등장 → ③ 타이틀 등장 (그래픽·타이틀은 화면 가운데, 크게)
      → ④ 그래픽·타이틀이 왼쪽(모바일은 위쪽) 제자리로 작아지며 이동 → ⑤ STEP 1~5 순차 등장 */
   var proc = document.querySelector('.svc-process');
   if (proc) {
@@ -315,11 +430,7 @@
     var toCenterY = function () { return inner.clientHeight / 2 - (head.offsetTop + head.offsetHeight / 2); };
     var headScale = function () { return window.innerWidth <= 1024 ? 1.15 : 1.2; };
 
-    // ① 배경 : 섹션 3 을 덮으며 올라오는 동안 등장 (덮는 전환이 보이도록)
-    gsap.fromTo(proc.querySelector('.svc-proc-bg'), { autoAlpha: 0, scale: 1.08 }, {
-      autoAlpha: 1, scale: 1, ease: 'power1.out',
-      scrollTrigger: { trigger: proc, start: 'top bottom', end: 'top top', scrub: 1, invalidateOnRefresh: true, refreshPriority: 1 }
-    });
+    // ① 배경 : 메인 섹션 1 → 2 처럼 배경이 처음부터 보이는 상태로 섹션 3 위를 덮으며 올라옴 (섹션 3 은 어두워짐 · stackOver)
 
     var procTl = gsap.timeline({ defaults: { ease: 'power2.out' } });
     procTl.fromTo(proc.querySelector('.svc-proc-graphic'), { autoAlpha: 0, scale: 0.7 }, { autoAlpha: 1, scale: 1, duration: 0.6 }, 0.1)

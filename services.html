@@ -57,202 +57,61 @@
       <div class="ab-scroll" aria-hidden="true">SCROLL</div>
     </section>
 
-    <!-- ===== 섹션 2 : 서비스 탭 (탭 클릭 시 해당 패널만 표시 · js/services.js)
+    <!-- ===== 섹션 2 : 서비스 탭 (탭 클릭 시 공통 틀의 문구만 교체 · js/services.js)
          메인 페이지 서비스 카드 링크(services.html#svc01 ~ #svc07)로 들어오면 해당 탭이 열림 ===== -->
     <section class="svc-tabs-sec">
+      <div class="svc-tabs-bg" aria-hidden="true">
+        <!-- 배경 동영상 (PC: video/services_tabs_bg.mp4 / 모바일: _m.mp4) - 화면 근처에서만 재생 (js/main.js) -->
+        <video class="svc-tabs-bg-video js-lazy-video" muted loop playsinline preload="metadata" poster="video/services_tabs_bg_poster.jpg" aria-hidden="true">
+          <source src="video/services_tabs_bg_m.mp4" type="video/mp4" media="(max-width: 768px)">
+          <source src="video/services_tabs_bg.mp4" type="video/mp4">
+        </video>
+      </div>
       <div class="inner">
         <div class="svc-tabs" role="tablist" aria-label="서비스 선택">
-          <button type="button" class="svc-tab on" role="tab" aria-selected="true" aria-controls="svc01">SEO · AEO · GEO</button>
-          <button type="button" class="svc-tab" role="tab" aria-selected="false" aria-controls="svc02">홈페이지</button>
-          <button type="button" class="svc-tab" role="tab" aria-selected="false" aria-controls="svc03">네이버 블로그</button>
-          <button type="button" class="svc-tab" role="tab" aria-selected="false" aria-controls="svc04">플레이스</button>
-          <button type="button" class="svc-tab" role="tab" aria-selected="false" aria-controls="svc05">SNS</button>
-          <button type="button" class="svc-tab" role="tab" aria-selected="false" aria-controls="svc06">영상 · 숏폼</button>
-          <button type="button" class="svc-tab" role="tab" aria-selected="false" aria-controls="svc07">검색광고</button>
+          <button type="button" class="svc-tab on" role="tab" aria-selected="true" aria-controls="svcPane" data-svc="svc01">SEO · AEO · GEO</button>
+          <button type="button" class="svc-tab" role="tab" aria-selected="false" aria-controls="svcPane" data-svc="svc02">홈페이지</button>
+          <button type="button" class="svc-tab" role="tab" aria-selected="false" aria-controls="svcPane" data-svc="svc03">네이버 블로그</button>
+          <button type="button" class="svc-tab" role="tab" aria-selected="false" aria-controls="svcPane" data-svc="svc04">플레이스</button>
+          <button type="button" class="svc-tab" role="tab" aria-selected="false" aria-controls="svcPane" data-svc="svc05">SNS</button>
+          <button type="button" class="svc-tab" role="tab" aria-selected="false" aria-controls="svcPane" data-svc="svc06">영상 · 숏폼</button>
+          <button type="button" class="svc-tab" role="tab" aria-selected="false" aria-controls="svcPane" data-svc="svc07">검색광고</button>
         </div>
 
-        <!-- 01 : SEO · AEO · GEO -->
-        <div class="svc-pane on" id="svc01" role="tabpanel">
+        <!-- 서비스 내용 : 공통 틀 1개 (기본 = SEO · AEO · GEO)
+             탭을 누르면 js/services.js 의 SERVICE_DATA 에서 해당 문구를 찾아 data-svc-field 자리만 교체 -->
+        <div class="svc-pane" id="svcPane" role="tabpanel" aria-live="polite">
           <div class="svc-headline">
-            <div><span class="sec-label">AI SEARCH STRATEGY</span><h3>검색부터 AI 답변까지<br>브랜드 정보를 <span class="t-green">하나</span>로 연결</h3></div>
-            <div class="svc-summary"><strong>SEO가 기반이고 AEO·GEO는 그 위에 확장됩니다.</strong><p>검색엔진이 사이트를 이해하는 구조, 고객 질문에 바로 답하는 콘텐츠, 생성형 AI가 브랜드와 서비스를 정확히 이해하도록 만드는 정보를 함께 정리합니다.</p></div>
+            <div><span class="sec-label" data-svc-field="label">AI SEARCH STRATEGY</span><h3 data-svc-field="title">검색부터 AI 답변까지<br>브랜드 정보를 <span class="t-green">하나</span>로 연결</h3></div>
+            <div class="svc-summary"><strong data-svc-field="summaryTitle">SEO가 기반이고 AEO·GEO는 그 위에 확장됩니다.</strong><p data-svc-field="summary">검색엔진이 사이트를 이해하는 구조, 고객 질문에 바로 답하는 콘텐츠, 생성형 AI가 브랜드와 서비스를 정확히 이해하도록 만드는 정보를 함께 정리합니다.</p></div>
           </div>
           <span class="svc-plus" aria-hidden="true"></span>
           <div class="svc-block svc-block-focus">
             <span class="svc-block-title">WHAT WE CHANGE</span>
             <ul class="svc-focus">
-              <li><strong>검색 기반</strong><p>페이지 제목, 설명, 헤딩, 내부 링크, 인덱싱 등 검색 기본 구조를 점검합니다.</p></li>
-              <li><strong>질문형 콘텐츠</strong><p>실제 고객이 묻는 질문을 기준으로 FAQ, 비교형, 정보형 콘텐츠를 설계합니다.</p></li>
-              <li><strong>브랜드 정보</strong><p>회사명, 서비스, 지역, 전문 분야가 홈페이지·블로그·플레이스에서 다르게 보이지 않도록 정리합니다.</p></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- 02 : 홈페이지 -->
-        <div class="svc-pane" id="svc02" role="tabpanel" hidden>
-          <div class="svc-headline">
-            <div><span class="sec-label">WEBSITE</span><h3>보기 좋은 홈페이지보다<br>이해되고 선택되는 홈페이지</h3></div>
-            <div class="svc-summary"><strong>메인은 짧게, 상세는 설득력 있게.</strong><p>브랜드 메시지와 핵심 서비스는 메인에서 빠르게 이해시키고, 필요한 정보는 상세페이지에서 충분히 설명해 문의로 이어지도록 설계합니다.</p></div>
-          </div>
-          <span class="svc-plus" aria-hidden="true"></span>
-          <div class="svc-block svc-block-focus">
-            <span class="svc-block-title">WHAT WE CHANGE</span>
-            <ul class="svc-focus">
-              <li><strong>정보 구조</strong><p>ABOUT, SERVICES, PORTFOLIO, FAQ, CONTACT의 역할을 분리해 필요한 정보를 빨리 찾게 합니다.</p></li>
-              <li><strong>검색 기반</strong><p>SEO 기본 세팅과 AEO·GEO에 필요한 질문형 정보, 구조화 데이터를 함께 고려합니다.</p></li>
-              <li><strong>전환 동선</strong><p>전화, 문의, 상담 등 실제 행동으로 이어지는 CTA를 페이지 흐름에 맞게 배치합니다.</p></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- 03 : 네이버 블로그 -->
-        <div class="svc-pane" id="svc03" role="tabpanel" hidden>
-          <div class="svc-headline">
-            <div><span class="sec-label">NAVER BLOG</span><h3>키워드만 반복하지 않고<br>고객 질문에 답하는 콘텐츠</h3></div>
-            <div class="svc-summary"><strong>발행 수보다 검색 의도와 정보의 질을 봅니다.</strong><p>대표 키워드, 지역 키워드, 세부 키워드, 실제 상담 질문을 나눠 콘텐츠를 기획하고 전문성과 신뢰를 쌓는 글을 축적합니다.</p></div>
-          </div>
-          <span class="svc-plus" aria-hidden="true"></span>
-          <div class="svc-block svc-block-focus">
-            <span class="svc-block-title">WHAT WE CHANGE</span>
-            <ul class="svc-focus">
-              <li><strong>키워드 구조</strong><p>대표·지역·세부·질문 키워드를 목적별로 나눠 한쪽에 치우치지 않게 운영합니다.</p></li>
-              <li><strong>콘텐츠 품질</strong><p>같은 말을 반복하기보다 실제 사례, 비교, FAQ, 전문 정보를 다르게 구성합니다.</p></li>
-              <li><strong>모바일 가독성</strong><p>짧은 문단, 명확한 소제목, 핵심 답변 우선 구조로 읽기 쉽게 만듭니다.</p></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- 04 : 플레이스 -->
-        <div class="svc-pane" id="svc04" role="tabpanel" hidden>
-          <div class="svc-headline">
-            <div><span class="sec-label">LOCAL SEARCH</span><h3>가까운 고객이 찾을 때<br>정확한 정보를 빠르게 보여줍니다.</h3></div>
-            <div class="svc-summary"><strong>플레이스는 지역 검색의 첫인상입니다.</strong><p>주소와 영업시간만 맞추는 수준을 넘어 서비스, 대표 이미지, 소개, 소식, 예약·전화까지 방문 전 필요한 정보를 정리합니다.</p></div>
-          </div>
-          <span class="svc-plus" aria-hidden="true"></span>
-          <div class="svc-block svc-block-focus">
-            <span class="svc-block-title">WHAT WE CHANGE</span>
-            <ul class="svc-focus">
-              <li><strong>기본 정보</strong><p>상호, 주소, 전화, 영업시간, 서비스 정보를 최신 상태로 맞춥니다.</p></li>
-              <li><strong>소개·이미지</strong><p>처음 보는 고객이 어떤 곳인지 바로 이해하도록 소개글과 대표 이미지를 정리합니다.</p></li>
-              <li><strong>전환 정보</strong><p>전화, 길찾기, 예약처럼 실제 방문과 상담으로 이어지는 요소를 점검합니다.</p></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- 05 : SNS -->
-        <div class="svc-pane" id="svc05" role="tabpanel" hidden>
-          <div class="svc-headline">
-            <div><span class="sec-label">SOCIAL CONTENT</span><h3>브랜드의 분위기와 경험을<br>한눈에 보이게 만듭니다.</h3></div>
-            <div class="svc-summary"><strong>SNS는 ‘우리가 어떤 회사인지’를 빠르게 보여주는 채널입니다.</strong><p>정보, 사례, 사람, 제품, 분위기를 적절히 섞어 브랜드를 입체적으로 보여주고, 카드뉴스·릴스·숏폼을 목적에 맞게 기획합니다.</p></div>
-          </div>
-          <span class="svc-plus" aria-hidden="true"></span>
-          <div class="svc-block svc-block-focus">
-            <span class="svc-block-title">WHAT WE CHANGE</span>
-            <ul class="svc-focus">
-              <li><strong>콘텐츠 축</strong><p>정보형, 사례형, 브랜드형, 프로모션형 콘텐츠 비율을 정합니다.</p></li>
-              <li><strong>비주얼 톤</strong><p>썸네일과 카드뉴스, 영상의 톤을 맞춰 브랜드가 기억되게 합니다.</p></li>
-              <li><strong>숏폼</strong><p>짧은 시간에 강점이 보이도록 장면, 멘트, 자막을 기획합니다.</p></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- 06 : 영상 · 숏폼 -->
-        <div class="svc-pane" id="svc06" role="tabpanel" hidden>
-          <div class="svc-headline">
-            <div><span class="sec-label">VIDEO CONTENT</span><h3>설명하기 어려운 강점을<br>영상으로 빠르게 이해시킵니다.</h3></div>
-            <div class="svc-summary"><strong>한 번 촬영한 원본을 여러 콘텐츠로 확장합니다.</strong><p>브랜드 소개, 제품 특장점, 인터뷰, 행사 스케치 등을 목적에 맞게 기획하고 긴 영상에서 상세 영상, 숏폼까지 재가공할 수 있게 설계합니다.</p></div>
-          </div>
-          <span class="svc-plus" aria-hidden="true"></span>
-          <div class="svc-block svc-block-focus">
-            <span class="svc-block-title">WHAT WE CHANGE</span>
-            <ul class="svc-focus">
-              <li><strong>메시지 우선</strong><p>누구에게 무엇을 보여줄지 먼저 정하고 장면과 스토리를 구성합니다.</p></li>
-              <li><strong>제품·서비스 표현</strong><p>글로 설명하기 어려운 특장점을 촬영과 그래픽으로 보여줍니다.</p></li>
-              <li><strong>멀티 포맷</strong><p>메인 홍보영상, 2~3분 영상, 30초 숏폼처럼 채널별로 재가공합니다.</p></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- 07 : 검색광고 -->
-        <div class="svc-pane" id="svc07" role="tabpanel" hidden>
-          <div class="svc-headline">
-            <div><span class="sec-label">PERFORMANCE MARKETING</span><h3>광고비보다 먼저<br>어떤 검색어에서 전환할지 봅니다.</h3></div>
-            <div class="svc-summary"><strong>광고와 콘텐츠를 따로 보지 않습니다.</strong><p>검색광고에서 실제로 들어오는 검색어와 전환 데이터를 확인하고, 광고문구·랜딩페이지·콘텐츠가 같은 의도에 맞춰지도록 조정합니다.</p></div>
-          </div>
-          <span class="svc-plus" aria-hidden="true"></span>
-          <div class="svc-block svc-block-focus">
-            <span class="svc-block-title">WHAT WE CHANGE</span>
-            <ul class="svc-focus">
-              <li><strong>키워드 분류</strong><p>브랜드, 일반, 지역, 문제형 검색어를 목적별로 나눕니다.</p></li>
-              <li><strong>랜딩 연결</strong><p>검색어와 광고문구, 랜딩페이지의 핵심 메시지를 맞춥니다.</p></li>
-              <li><strong>데이터 활용</strong><p>실제 검색어와 전환 데이터를 블로그·홈페이지 콘텐츠 개선에도 활용합니다.</p></li>
+              <li><strong data-svc-field="focus.0.0">검색 기반</strong><p data-svc-field="focus.0.1">페이지 제목, 설명, 헤딩, 내부 링크, 인덱싱 등 검색 기본 구조를 점검합니다.</p></li>
+              <li><strong data-svc-field="focus.1.0">질문형 콘텐츠</strong><p data-svc-field="focus.1.1">실제 고객이 묻는 질문을 기준으로 FAQ, 비교형, 정보형 콘텐츠를 설계합니다.</p></li>
+              <li><strong data-svc-field="focus.2.0">브랜드 정보</strong><p data-svc-field="focus.2.1">회사명, 서비스, 지역, 전문 분야가 홈페이지·블로그·플레이스에서 다르게 보이지 않도록 정리합니다.</p></li>
             </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== 섹션 3 : 실행 산출물 (선택한 탭의 산출물 6개 표시 · js/services.js) + 이미지 카드 슬라이더 ===== -->
+    <!-- ===== 섹션 3 : 실행 산출물 (선택한 탭의 산출물 6개 · 공통 목록 · js/services.js) + 이미지 카드 슬라이더 ===== -->
     <section class="svc-output">
       <div class="svc-output-top">
         <div class="inner">
           <h2 class="svc-output-title">막연한 구상이 아닌,<br>눈으로 확인하는 명확한 실행 산출물</h2>
           <p class="svc-output-desc">진단을 넘어, 브랜드의 검색·AI 노출 구조를 실제로 바꾸는 원츠의 핵심 리포트와 가이드를 제공합니다.</p>
-          <ul class="svc-deliver on" data-pane="svc01">
-            <li><strong>SEO/AEO/GEO 진단</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>키워드·질문 맵</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>FAQ·콘텐츠 기획</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>구조화 데이터</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>채널 정보 정합성</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>월별 개선 리포트</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-          </ul>
-          <ul class="svc-deliver" data-pane="svc02" hidden>
-            <li><strong>사이트맵</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>메인/상세 설계</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>카피라이팅</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>반응형 디자인</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>SEO 기본 세팅</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>문의 전환 동선</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-          </ul>
-          <ul class="svc-deliver" data-pane="svc03" hidden>
-            <li><strong>월간 콘텐츠 캘린더</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>블로그 원고</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>대표·상세 이미지</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>키워드 맵</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>FAQ형 콘텐츠</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>운영 리포트</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-          </ul>
-          <ul class="svc-deliver" data-pane="svc04" hidden>
-            <li><strong>플레이스 진단</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>소개글 개선</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>대표 이미지 구성</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>소식 콘텐츠</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>정보 정합성 점검</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>운영 리포트</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-          </ul>
-          <ul class="svc-deliver" data-pane="svc05" hidden>
-            <li><strong>SNS 캘린더</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>피드 디자인</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>카드뉴스</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>릴스·숏폼</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>캡션·해시태그</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>촬영 가이드</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-          </ul>
-          <ul class="svc-deliver" data-pane="svc06" hidden>
-            <li><strong>영상 기획안</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>스토리보드</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>메인 홍보영상</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>상세 영상</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>숏폼</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>썸네일·자막</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-          </ul>
-          <ul class="svc-deliver" data-pane="svc07" hidden>
-            <li><strong>키워드 구조안</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>광고그룹·문구</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>랜딩 개선안</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>예산 운영안</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>전환 리포트</strong><span>프로젝트 범위에 맞춰 조정</span></li>
-            <li><strong>검색어 기반 콘텐츠 제안</strong><span>프로젝트 범위에 맞춰 조정</span></li>
+          <!-- 산출물 : 공통 목록 1개 (선택한 탭에 맞춰 data-svc-field 자리만 교체 · js/services.js) -->
+          <ul class="svc-deliver" id="svcDeliver" aria-live="polite">
+            <li><strong data-svc-field="deliver.0">SEO/AEO/GEO 진단</strong><span>프로젝트 범위에 맞춰 조정</span></li>
+            <li><strong data-svc-field="deliver.1">키워드·질문 맵</strong><span>프로젝트 범위에 맞춰 조정</span></li>
+            <li><strong data-svc-field="deliver.2">FAQ·콘텐츠 기획</strong><span>프로젝트 범위에 맞춰 조정</span></li>
+            <li><strong data-svc-field="deliver.3">구조화 데이터</strong><span>프로젝트 범위에 맞춰 조정</span></li>
+            <li><strong data-svc-field="deliver.4">채널 정보 정합성</strong><span>프로젝트 범위에 맞춰 조정</span></li>
+            <li><strong data-svc-field="deliver.5">월별 개선 리포트</strong><span>프로젝트 범위에 맞춰 조정</span></li>
           </ul>
         </div>
       </div>
@@ -277,7 +136,7 @@
       <div class="svc-proc-bg" aria-hidden="true"></div>
       <div class="inner svc-proc-inner">
         <div class="svc-proc-head">
-          <div class="svc-proc-graphic" aria-hidden="true"><span>PNG</span></div> <!-- TODO: 구체 일러스트 PNG 교체 -->
+          <div class="svc-proc-graphic" aria-hidden="true"><img src="img/services_process_graphic.webp" alt="" width="900" height="877" loading="lazy" decoding="async"></div>
           <div class="svc-proc-title">
             <span class="sec-label">WORK PROCESS</span>
             <h2>원츠의 프로젝트 진행 과정</h2>

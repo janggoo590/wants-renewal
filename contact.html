@@ -42,33 +42,32 @@
     </div>
   </header>
 
-  <main>
-    <!-- ===== Sub Visual ===== -->
-    <section class="sub-visual">
-      <span class="sec-label">CONTACT</span>
-      <h2>1:1 마케팅 진단 신청</h2>
-      <p>현재 브랜드 상태부터 객관적으로 분석해 드립니다.</p>
-    </section>
+  <main class="ct-page">
+    <!-- ===== 섹션 1 : 비주얼 카드(왼쪽) + 상담 신청 폼(오른쪽) · 어두운 화면 ===== -->
+    <section class="ct-hero">
+      <div class="inner ct-hero-inner">
+        <!-- 비주얼 카드 : 배경은 그라데이션 임시 (TODO: 이미지 교체 시 .ct-card-bg background-image) -->
+        <div class="ct-card reveal">
+          <div class="ct-card-bg" aria-hidden="true"></div>
+          <img class="ct-card-logo" src="img/logo_top.png" alt="WANTS 브랜드 마케팅" width="220" height="61">
+          <div class="ct-card-txt">
+            <span class="ct-badge"><i aria-hidden="true"></i>CONTACT WANTS</span>
+            <h2 class="ct-card-title">지금 필요한 마케팅부터<br>우선순위를 <em>같이</em> 정합니다.</h2>
+            <p class="ct-card-desc">홈페이지 전체 리뉴얼이 필요한지, 블로그만 바꿔도 되는지, SEO·AEO·GEO를 어디서부터 시작해야 하는지 현재 상태를 기준으로 이야기합니다.</p>
+          </div>
+        </div>
 
-    <!-- ===== Contact ===== -->
-    <section class="sub-sec">
-      <div class="inner">
-        <span class="sec-label reveal">GET IN TOUCH</span>
-        <h2 class="sec-title reveal d1">어떤 채널부터 시작해야 할지<br>함께 찾아드립니다</h2>
-        <div class="contact-wrap">
-          <ul class="contact-info reveal">
-            <li><dl><dt>TEL</dt><dd>051-000-0000</dd></dl></li>
-            <li><dl><dt>EMAIL</dt><dd>hello@wants-marketing.co.kr</dd></dl></li>
-            <li><dl><dt>ADDRESS</dt><dd>부산광역시 해운대구 센텀중앙로 00, <br>원츠타워 0층</dd></dl></li>
-            <li><dl><dt>HOURS</dt><dd>평일 09:00 - 18:00<br>(점심 12:00 - 13:00 / 주말·공휴일 휴무)</dd></dl></li>
-          </ul>
-          <form class="contact-form reveal d1" action="#" method="post">
+        <!-- 상담 신청 폼 (제출 처리 : js/main.js · 실제 전송은 추후 연동) -->
+        <div class="ct-form-wrap reveal d1">
+          <h3 class="ct-form-title">이 정도만 알려주셔도<br>첫 상담이 가능합니다.</h3>
+          <p class="ct-form-desc">정리된 기획서가 없어도 괜찮습니다.<br>지금 어떤 부분이 답답한지부터 들으면 됩니다.</p>
+          <form class="contact-form ct-form" action="#" method="post">
             <div class="row">
-              <div class="field"><label for="cName">회사명 / 성함 <em>*</em></label><input type="text" id="cName" name="name" required></div>
+              <div class="field"><label for="cName">회사명 / 성함 <em>*</em></label><input type="text" id="cName" name="name" placeholder="회사명 또는 성함" required></div>
               <div class="field"><label for="cTel">연락처 <em>*</em></label><input type="tel" id="cTel" name="tel" placeholder="010-0000-0000" required></div>
             </div>
             <div class="row">
-              <div class="field"><label for="cMail">이메일</label><input type="email" id="cMail" name="email"></div>
+              <div class="field"><label for="cMail">이메일</label><input type="email" id="cMail" name="email" placeholder="example@email.com"></div>
               <div class="field">
                 <label for="cBiz">업종</label>
                 <select id="cBiz" name="biz">
@@ -98,7 +97,39 @@
             <button type="submit" class="btn-submit">진단 신청하기</button>
           </form>
         </div>
-        <div class="ph-box map-box reveal"><!-- TODO: 지도 API 연동 --></div>
+      </div>
+    </section>
+
+    <!-- ===== 섹션 2 : 상담 전 안내 + 연락처 ===== -->
+    <section class="ct-info">
+      <div class="inner">
+        <dl class="ct-meta reveal">
+          <div><dt>EMAIL</dt><dd><a href="mailto:wants24@naver.com">wants24@naver.com</a></dd></div>
+          <div><dt>ADDRESS</dt><dd>부산광역시 남구 용소로 19번길 19, 동우빌딩 2층</dd></div>
+          <div><dt>HOURS</dt><dd>평일 09:00 - 18:00 (점심 12:00 - 13:00 / 주말·공휴일 휴무)</dd></div>
+        </dl>
+        <div class="ct-info-grid">
+          <div class="ct-info-card reveal">
+            <h3>먼저 알려주시면 좋은 내용</h3>
+            <p>아래 내용이 있으면 현재 상황을 더 빠르게 이해할 수 있습니다.</p>
+            <ul class="ct-list">
+              <li>업종과 주요 서비스</li>
+              <li>현재 운영 중인 홈페이지·블로그·플레이스·SNS</li>
+              <li>지금 가장 해결하고 싶은 문제</li>
+              <li>희망하는 일정과 대략적인 예산</li>
+            </ul>
+          </div>
+          <div class="ct-info-card reveal d1">
+            <h3>WANTS</h3>
+            <p>서비스를 억지로 끼워 맞추기보다 현재 고객이 어디에서 우리를 찾고 비교하는지부터 같이 확인합니다.</p>
+            <ul class="ct-list">
+              <li><a href="tel:0519167000">대표전화 051-916-7000</a></li>
+              <li><a href="https://blog.naver.com/wants24" target="_blank" rel="noopener">WANTS BLOG 바로가기 →</a></li>
+              <li><a href="https://www.instagram.com/wants_marketing/" target="_blank" rel="noopener">@wants_marketing →</a></li>
+              <li>전국 프로젝트 관리 가능</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
   </main>
