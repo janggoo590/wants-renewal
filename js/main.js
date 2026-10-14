@@ -337,6 +337,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  /* ---------- Sub : FAQ Filter (분류별 질문만 표시) ---------- */
+  var faqFilterBtns = document.querySelectorAll('.faq-filter button');
+  faqFilterBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var cate = btn.dataset.filter;
+      faqFilterBtns.forEach(function (b) { b.classList.toggle('on', b === btn); });
+      document.querySelectorAll('.faq-list .faq-item').forEach(function (li) {
+        li.classList.toggle('hide', cate !== 'all' && li.dataset.cate !== cate);
+      });
+      if (window.ScrollTrigger) window.ScrollTrigger.refresh(); // 목록 높이가 바뀌므로 스크롤 연출 위치 재계산
+    });
+  });
+
   /* ---------- Sub : Contact Form (임시) ---------- */
   var form = document.querySelector('.contact-form');
   if (form) {

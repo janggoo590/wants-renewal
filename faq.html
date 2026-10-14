@@ -43,40 +43,141 @@
   </header>
 
   <main>
-    <!-- ===== Sub Visual ===== -->
-    <section class="sub-visual">
-      <span class="sec-label">FAQ</span>
-      <h2>자주 묻는 질문</h2>
-      <p>원츠 서비스에 대해 궁금한 점을 확인해 보세요.</p>
+    <!-- ===== 섹션 1 : 인트로 (텍스트 왼쪽 · 오른쪽 이미지 자리 · 화면 높이에 맞춰 꽉 차게) ===== -->
+    <section class="faq-visual">
+      <div class="faq-visual-img" aria-hidden="true"><span>INTRO IMAGE</span></div> <!-- TODO: 인트로 이미지 교체 -->
+      <div class="inner">
+        <h2 class="faq-visual-title">FAQ</h2>
+        <p class="faq-visual-sub">시작하기 전에<br>많이 묻는 질문들</p>
+        <p class="faq-visual-desc">서비스 설명을 반복하기보다 실제 상담 전 많이 궁금해하는 내용을 정리했습니다.<br>FAQ 자체도 검색과 AI가 이해하기 좋은 정보 자산으로 활용할 수 있습니다.</p>
+      </div>
     </section>
 
-    <!-- ===== FAQ List ===== -->
-    <section class="sub-sec">
+    <!-- ===== 섹션 2 : FAQ 목록 (선 중심 리스트 · 분류 필터 · 클릭 시 답변 펼침 · js/main.js) ===== -->
+    <section class="faq-sec">
       <div class="inner">
-        <div class="center">
-          <span class="sec-label reveal">QUESTION &amp; ANSWER</span>
-          <h2 class="sec-title reveal d1">궁금한 점이 있으신가요?</h2>
+        <div class="faq-head">
+          <h2 class="faq-head-title reveal">QUESTIONS<br>&amp; ANSWERS</h2>
+          <div class="faq-filter reveal d1" role="group" aria-label="질문 분류">
+            <button type="button" class="on" data-filter="all">전체</button>
+            <button type="button" data-filter="start">처음 상담</button>
+            <button type="button" data-filter="service">서비스 선택</button>
+            <button type="button" data-filter="ai">SEO · AEO · GEO</button>
+            <button type="button" data-filter="operation">운영 · 소통</button>
+          </div>
         </div>
-        <ul class="faq-list reveal d2">
-          <li class="faq-item">
-            <button type="button" class="faq-q" aria-expanded="false">SEO, AEO, GEO는 각각 무엇인가요?</button>
-            <div class="faq-a"><div><p>SEO는 검색엔진 최적화, AEO는 답변 엔진(질문형 검색) 최적화, GEO는 생성형 AI가 브랜드 정보를 정확히 인용·추천하도록 만드는 최적화입니다. 원츠는 세 가지를 하나의 정보 구조로 연결합니다.</p></div></div>
+        <ul class="faq-list">
+          <li class="faq-item reveal" data-cate="start">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a01">
+              <span class="faq-cate">처음 상담</span>
+              <span class="faq-q-txt">상담 전에 자료를 다 준비해야 하나요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a01"><div><p>아니요. 업종, 현재 운영 중인 채널, 가장 고민되는 문제 정도만 있어도 시작할 수 있습니다. 필요한 자료는 상담 후 원츠가 정리해서 요청드립니다.</p></div></div>
           </li>
-          <li class="faq-item">
-            <button type="button" class="faq-q" aria-expanded="false">한 가지 채널만 의뢰해도 되나요?</button>
-            <div class="faq-a"><div><p>네, 가능합니다. 다만 진단 후 브랜드에 가장 효과적인 채널 우선순위를 함께 제안드립니다.</p></div></div>
+          <li class="faq-item reveal" data-cate="start">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a02">
+              <span class="faq-cate">처음 상담</span>
+              <span class="faq-q-txt">무엇을 해야 할지 모르는 상태에서도 상담이 가능한가요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a02"><div><p>가능합니다. 홈페이지가 필요한지, 블로그나 플레이스만 손봐도 되는지, 광고를 먼저 해야 하는지 현재 상황을 보고 우선순위부터 정리합니다.</p></div></div>
           </li>
-          <li class="faq-item">
-            <button type="button" class="faq-q" aria-expanded="false">계약 기간과 비용은 어떻게 되나요?</button>
-            <div class="faq-a"><div><p>업종과 채널, 운영 범위에 따라 달라집니다. 1:1 마케팅 진단 후 맞춤 견적을 안내해 드립니다.</p></div></div>
+          <li class="faq-item reveal" data-cate="start">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a03">
+              <span class="faq-cate">처음 상담</span>
+              <span class="faq-q-txt">계약 기간과 비용은 어떻게 되나요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a03"><div><p>업종과 채널, 운영 범위에 따라 달라집니다. 1:1 마케팅 진단 후 맞춤 견적을 안내해 드립니다.</p></div></div>
           </li>
-          <li class="faq-item">
-            <button type="button" class="faq-q" aria-expanded="false">성과는 어떻게 확인할 수 있나요?</button>
-            <div class="faq-a"><div><p>매월 노출·유입·전환 데이터를 정리한 리포트를 제공하며, 정기 미팅을 통해 다음 달 방향을 함께 결정합니다.</p></div></div>
+          <li class="faq-item reveal" data-cate="service">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a04">
+              <span class="faq-cate">서비스 선택</span>
+              <span class="faq-q-txt">홈페이지, 블로그, 플레이스를 꼭 다 같이 해야 하나요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a04"><div><p>아닙니다. 모든 채널을 늘리는 것이 목표가 아니라 고객이 실제로 우리를 찾고 비교하는 경로에 필요한 채널만 선택하는 것이 중요합니다.</p></div></div>
           </li>
-          <li class="faq-item">
-            <button type="button" class="faq-q" aria-expanded="false">부산 외 지역도 진행 가능한가요?</button>
-            <div class="faq-a"><div><p>네, 전국 어디든 온라인 미팅으로 진행 가능합니다. 촬영이 필요한 경우 일정 협의 후 방문합니다.</p></div></div>
+          <li class="faq-item reveal" data-cate="service">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a05">
+              <span class="faq-cate">서비스 선택</span>
+              <span class="faq-q-txt">한 가지 채널만 의뢰해도 되나요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a05"><div><p>네, 가능합니다. 다만 진단 후 브랜드에 가장 효과적인 채널 우선순위를 함께 제안드립니다.</p></div></div>
+          </li>
+          <li class="faq-item reveal" data-cate="service">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a06">
+              <span class="faq-cate">서비스 선택</span>
+              <span class="faq-q-txt">기존에 운영하던 콘텐츠는 전부 새로 만들어야 하나요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a06"><div><p>살릴 수 있는 것은 살립니다. 기존 콘텐츠를 분석해 좋은 부분은 유지하고, 메시지가 약하거나 중복되는 부분만 리뉴얼하는 방식이 효율적입니다.</p></div></div>
+          </li>
+          <li class="faq-item reveal" data-cate="service">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a07">
+              <span class="faq-cate">서비스 선택</span>
+              <span class="faq-q-txt">영상이나 SNS만 따로 진행할 수도 있나요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a07"><div><p>가능합니다. 다만 단독 제작이라도 홈페이지나 블로그에서 말하는 브랜드 메시지와 어긋나지 않도록 기존 채널을 함께 확인합니다.</p></div></div>
+          </li>
+          <li class="faq-item reveal" data-cate="ai">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a08">
+              <span class="faq-cate">SEO · AEO · GEO</span>
+              <span class="faq-q-txt">SEO, AEO, GEO는 각각 무엇인가요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a08"><div><p>SEO는 검색엔진 최적화, AEO는 답변 엔진(질문형 검색) 최적화, GEO는 생성형 AI가 브랜드 정보를 정확히 인용·추천하도록 만드는 최적화입니다. 원츠는 세 가지를 하나의 정보 구조로 연결합니다.</p></div></div>
+          </li>
+          <li class="faq-item reveal" data-cate="ai">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a09">
+              <span class="faq-cate">SEO · AEO · GEO</span>
+              <span class="faq-q-txt">SEO, AEO, GEO는 각각 완전히 다른 작업인가요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a09"><div><p>완전히 따로 보지 않습니다. SEO가 검색 기반을 만들고, AEO는 질문에 답이 되는 콘텐츠 구조를 강화하며, GEO는 생성형 AI가 브랜드와 서비스를 더 명확하게 이해하도록 정보를 연결하는 방향입니다.</p></div></div>
+          </li>
+          <li class="faq-item reveal" data-cate="ai">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a10">
+              <span class="faq-cate">SEO · AEO · GEO</span>
+              <span class="faq-q-txt">AI 검색에 바로 노출된다고 보장할 수 있나요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a10"><div><p>특정 AI의 답변 노출을 보장할 수는 없습니다. 대신 홈페이지와 콘텐츠의 정보 구조, 전문성, 일관성을 높여 검색엔진과 AI가 브랜드를 이해하기 쉬운 상태로 만드는 것이 핵심입니다.</p></div></div>
+          </li>
+          <li class="faq-item reveal" data-cate="operation">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a11">
+              <span class="faq-cate">운영 · 소통</span>
+              <span class="faq-q-txt">마케팅 진행 중에는 어떻게 소통하나요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a11"><div><p>초기 전략만 전달하고 끝내는 방식보다 대표·실무자와 지속적으로 소통하며 현장 변화와 마케팅 시장의 변화를 함께 반영하는 운영을 지향합니다.</p></div></div>
+          </li>
+          <li class="faq-item reveal" data-cate="operation">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a12">
+              <span class="faq-cate">운영 · 소통</span>
+              <span class="faq-q-txt">보고서는 어떤 내용을 보나요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a12"><div><p>단순 노출 수만 보기보다 검색어, 유입, 콘텐츠 반응, 문의로 이어진 흐름, 개선해야 할 콘텐츠와 채널을 함께 정리하는 방향이 좋습니다.</p></div></div>
+          </li>
+          <li class="faq-item reveal" data-cate="operation">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a13">
+              <span class="faq-cate">운영 · 소통</span>
+              <span class="faq-q-txt">성과는 어떻게 확인할 수 있나요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a13"><div><p>매월 노출·유입·전환 데이터를 정리한 리포트를 제공하며, 정기 미팅을 통해 다음 달 방향을 함께 결정합니다.</p></div></div>
+          </li>
+          <li class="faq-item reveal" data-cate="operation">
+            <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a14">
+              <span class="faq-cate">운영 · 소통</span>
+              <span class="faq-q-txt">지역이 부산이 아니어도 진행할 수 있나요?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a" id="faq-a14"><div><p>가능합니다. 원츠는 지역 제약 없이 프로젝트를 관리할 수 있고, 지역 검색이 중요한 업종은 해당 지역의 검색 의도와 경쟁 환경을 별도로 분석합니다. 미팅은 온라인으로 진행할 수 있으며, 촬영이 필요한 경우 일정 협의 후 방문합니다.</p></div></div>
           </li>
         </ul>
       </div>

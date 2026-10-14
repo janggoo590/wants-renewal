@@ -175,35 +175,81 @@
   stackOver(document.querySelector('.svc-tabs-sec'), 4);
   stackOver(document.querySelector('.svc-output'), 2);
 
-  /* 섹션 3 : 산출물 박스 · 메인 페이지 섹션 3 서비스 카드와 같은 효과 (js/scroll.js 5·7 참고)
-     ① 등장 : 박스 영역이 화면에 들어오면 아래에서 떠오르며 커지는 순차 등장
-     ② 강조 : 스크롤 진행에 맞춰 박스를 하나씩 차례로 강조 (.on = 마우스 올렸을 때 모습)
-     선택한 탭의 목록만 보이므로 항상 보이는 설명 문구를 기준으로 트리거하고, 7개 목록을 같은 순서로 함께 진행 */
-  var outDesc = document.querySelector('.svc-output-desc');
-  var deliverLists = gsap.utils.toArray('.svc-deliver');
-  if (outDesc && deliverLists.length) {
-    var deliverItems = gsap.utils.toArray('.svc-deliver li');
-    gsap.set(deliverItems, { y: 80, scale: 0.92, autoAlpha: 0 });
+  /* 섹션 2 : 선택된 서비스 내용 순차 등장 (영역에 들어오면 한 번 재생)
+     ① 라벨·타이틀 → ② 안내 박스 → ③ 플러스 기호 → ④ 카드 3개를 0.18초 간격으로 왼쪽부터
+     위쪽(타이틀·안내 박스)과 아래쪽(플러스·카드)은 각각 화면에 들어올 때 재생 (긴 영역이 화면 밖에서 미리 끝나지 않도록)
+     등장 전 탭을 바꾸면 새 패널은 기존 탭 전환 효과(svcPaneIn)로 바로 보임 */
+  var activePane = document.querySelector('.svc-pane.on');
+  if (activePane) {
+    var paneTop = gsap.utils.toArray(activePane.querySelectorAll('.svc-headline .sec-label, .svc-headline h3, .svc-summary'));
+    var panePlus = activePane.querySelector('.svc-plus');
+    var paneCards = gsap.utils.toArray(activePane.querySelectorAll('.svc-focus li'));
+    gsap.set(paneTop.concat(paneCards), { y: 50, autoAlpha: 0 }); // 시작 상태
+    if (panePlus) gsap.set(panePlus, { scale: 0.4, rotate: -90, autoAlpha: 0 });
     ScrollTrigger.create({
-      trigger: outDesc, start: 'bottom 85%', once: true, refreshPriority: 3,
+      trigger: activePane.querySelector('.svc-headline'), start: 'top 85%', once: true, refreshPriority: 3.5,
       onEnter: function () {
-        deliverLists.forEach(function (list) {
-          gsap.to(list.children, { y: 0, scale: 1, autoAlpha: 1, duration: 1, ease: 'power3.out', stagger: 0.08 });
-        });
+        gsap.to(paneTop, { y: 0, autoAlpha: 1, duration: 1.1, ease: 'power3.out', stagger: 0.18 });
       }
     });
+    ScrollTrigger.create({
+      trigger: panePlus || paneCards[0], start: 'top 88%', once: true, refreshPriority: 3.5,
+      onEnter: function () {
+        var tl = gsap.timeline();
+        if (panePlus) tl.to(panePlus, { scale: 1, rotate: 0, autoAlpha: 1, duration: 0.8, ease: 'back.out(1.6)' });
+        tl.to(paneCards, { y: 0, autoAlpha: 1, duration: 1, ease: 'power3.out', stagger: 0.18 }, panePlus ? '-=0.35' : 0);
+      }
+    });
+  }
 
+  /* 섹션 3 : 산출물 박스 · 화면 고정(pin) + 스크롤 연동(scrub) 순차 등장
+     박스 영역(.svc-output-top)을 타이틀이 탭 버튼 줄 아래에 오도록 고정
+     → 타이틀·설명은 화면 가운데에서 시작해, 박스가 왼쪽부터 하나씩 떠오르는 동안 원래 자리로 밀려 올라감
+     → 마지막 박스까지 나타난 뒤 잠시 머물고 고정 해제. 방금 다 나타난 박스는 강조(.on = 마우스 올렸을 때 모습)
+     선택한 탭의 목록만 보이므로 7개 목록을 같은 타이밍으로 함께 진행 (탭을 바꿔도 같은 진행 상태) */
+  var outTop = document.querySelector('.svc-output-top');
+  var deliverLists = gsap.utils.toArray('.svc-deliver');
+  if (outTop && deliverLists.length) {
+    var outTitle = outTop.querySelector('.svc-output-title');
+    var outDesc = outTop.querySelector('.svc-output-desc');
+    var deliverCount = deliverLists[0].children.length;
+    var CARD_START = 0.4, CARD_GAP = 0.6; // 박스 등장 시작 시점 · 박스 간 간격 (박스 하나당 duration 1)
     var setActiveDeliver = function (idx) {
       deliverLists.forEach(function (list) {
         Array.prototype.forEach.call(list.children, function (li, k) { li.classList.toggle('on', k === idx); });
       });
     };
+    var pad = function (side) { return parseFloat(getComputedStyle(outTop)['padding' + side]) || 0; };
+    var headerH = function () { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0; };
+    // 고정 시 영역 상단 위치 : 타이틀이 탭 버튼 줄 아래(여백 24px)에 오도록. 화면이 낮아 박스가 잘리면 박스 하단을 화면 하단에 맞춤
+    var pinTop = function () {
+      var tabsBar = document.querySelector('.svc-tabs');
+      var safeTop = headerH() + (tabsBar ? tabsBar.offsetHeight : 0) + 24;
+      return Math.round(Math.min(safeTop - pad('Top'), window.innerHeight - 20 - (outTop.offsetHeight - pad('Bottom'))));
+    };
+    // 타이틀·설명을 화면 가운데로 옮기는 거리 (고정된 상태 기준)
+    var toCenter = function () {
+      var groupH = outDesc.offsetTop + outDesc.offsetHeight - outTitle.offsetTop;
+      return Math.round((window.innerHeight - groupH) / 2 - (pinTop() + outTitle.offsetTop));
+    };
+
+    gsap.set(gsap.utils.toArray('.svc-deliver li'), { y: 80, scale: 0.92, autoAlpha: 0 }); // 시작 상태
+    var deliverTl = gsap.timeline();
+    deliverTl.fromTo([outTitle, outDesc], { y: toCenter }, { y: 0, duration: 1.4, ease: 'power2.inOut' }, 0);
+    deliverLists.forEach(function (list) {
+      deliverTl.to(list.children, { y: 0, scale: 1, autoAlpha: 1, duration: 1, ease: 'power2.out', stagger: CARD_GAP }, CARD_START);
+    });
+    deliverTl.to({}, { duration: 0.8 }); // 모두 나타난 상태로 잠시 머문 뒤 고정 해제
+
     ScrollTrigger.create({
-      trigger: outDesc, start: 'bottom 70%', end: 'bottom top', refreshPriority: 3,
+      trigger: outTop,
+      start: function () { return 'top ' + pinTop() + 'px'; },
+      end: function () { return '+=' + Math.round(window.innerHeight * (window.innerWidth <= 768 ? 1.6 : 2)); }, // 스크롤 거리
+      pin: true, scrub: 1, animation: deliverTl, invalidateOnRefresh: true, refreshPriority: 3.5,
+      pinReparent: true, // 섹션 3 자체도 이후 덮기 전환으로 고정(transform 적용)되어, 고정 중에는 body 로 옮겨야 화면에 고정됨
       onUpdate: function (self) {
-        var n = deliverLists[0].children.length;
-        // 구간을 박스 수만큼 나눠 순차 강조 (시작 직후 1번, 끝에서 마지막 박스)
-        setActiveDeliver(self.progress <= 0 ? -1 : Math.min(n - 1, Math.floor(self.progress * n)));
+        var t = self.progress * deliverTl.duration() - CARD_START - 1; // 첫 박스가 다 나타난 시점부터
+        setActiveDeliver(t < 0 ? -1 : Math.min(deliverCount - 1, Math.floor(t / CARD_GAP)));
       },
       onLeaveBack: function () { setActiveDeliver(-1); }
     });
