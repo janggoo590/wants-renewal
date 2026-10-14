@@ -7,6 +7,17 @@
    - 섹션 4 : 화면 고정 · 배경 → 그래픽 → 타이틀 → 좌측으로 이동하며 STEP 순차 등장
    ========================================================= */
 
+/* ---------- 스크롤 연출 공통 속도 ----------
+   스크롤을 빠르게 내려도 연출이 건너뛰거나 순식간에 끝나지 않도록 고정(pin) 구간을 넉넉히 두고,
+   scrub 지연으로 애니메이션이 스크롤을 부드럽게 따라오게 함 (값을 키우면 더 느리고 길게)
+   - PACE : 타임라인 duration 1 당 스크롤 거리 (화면 높이 배수)
+   - SCRUB : 스크롤을 따라잡는 지연 시간(초) */
+var SVC_SCROLL = {
+  PACE_PC: 1.4, PACE_MOBILE: 1.1,
+  SCRUB: 1.5,
+  pace: function () { return window.innerWidth <= 768 ? this.PACE_MOBILE : this.PACE_PC; }
+};
+
 /* ---------- 섹션 1 : 스크롤 연동 순차 등장 ----------
    ① 첫 줄 → ② "브랜드의 지속 가능한 성장" 2배 크기로 등장 → ③ 원래 크기로 축소 후 포인트 색상으로 변경
    → ④ 마지막 줄 → ⑤ 설명 문구(2줄 묶음)
@@ -28,7 +39,7 @@
   var hint = hero.querySelector('.ab-scroll');
 
   // duration 단위 = 화면 높이 (모바일은 조금 짧게)
-  var pace = function () { return window.innerWidth <= 768 ? 0.8 : 1; };
+  var pace = function () { return SVC_SCROLL.pace(); };
   var tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
   tl.to(hint, { autoAlpha: 0, duration: 0.2, ease: 'none' }, 0)
     .fromTo(line1, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.5 }, 0)
@@ -44,7 +55,7 @@
   ScrollTrigger.create({
     trigger: hero, start: 'top top',
     end: function () { return '+=' + Math.round(tl.duration() * window.innerHeight * pace()); },
-    animation: tl, pin: true, scrub: 1, invalidateOnRefresh: true,
+    animation: tl, pin: true, scrub: SVC_SCROLL.SCRUB, invalidateOnRefresh: true,
     refreshPriority: 5 // 화면 고정 구간을 먼저 계산해야 아래 요소들(scroll.js 등장 효과 등)의 위치가 맞음
   });
 })();
@@ -255,7 +266,7 @@ var SERVICE_DATA = {
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduceMotion || !window.gsap || !window.ScrollTrigger) return;
   gsap.registerPlugin(ScrollTrigger);
-  var pace = function () { return window.innerWidth <= 768 ? 0.8 : 1; };
+  var pace = function () { return SVC_SCROLL.pace(); };
 
   // 페이지 스크롤 이동 (Lenis 사용 시 Lenis 로)
   var scrollPage = function (y, immediate) {
@@ -265,7 +276,7 @@ var SERVICE_DATA = {
 
   /* 섹션 2 → 3, 섹션 3 → 4 : 메인 페이지 섹션 1 → 2 와 같은 전환 (js/scroll.js stackOver 와 같은 방식)
      섹션을 고정한 채 머문 뒤, 다음 섹션이 위로 덮어 올라오는 동안 0 → 0.9 어두워지며 내용이 흐려짐 */
-  var HOLD_PC = 0.8, HOLD_MOBILE = 0.5; // 머무름 거리 (화면 높이 대비 · 메인과 동일)
+  var HOLD_PC = 1, HOLD_MOBILE = 0.6; // 머무름 거리 (화면 높이 대비 · 빠른 스크롤에도 다 보이도록 메인보다 조금 길게)
   var getHold = function () { return Math.round(window.innerHeight * (window.innerWidth <= 768 ? HOLD_MOBILE : HOLD_PC)); };
   var stacks = [];
   var stackOver = function (section, priority) {
@@ -280,7 +291,7 @@ var SERVICE_DATA = {
       scrollTrigger: {
         trigger: section, start: anchor,
         end: function () { return '+=' + (getHold() + cover()); },
-        pin: true, pinSpacing: false, scrub: 1, invalidateOnRefresh: true, refreshPriority: priority
+        pin: true, pinSpacing: false, scrub: SVC_SCROLL.SCRUB, invalidateOnRefresh: true, refreshPriority: priority
       }
     })
       .to({}, { duration: hold })
@@ -359,8 +370,8 @@ var SERVICE_DATA = {
     ScrollTrigger.create({
       trigger: outTop,
       start: function () { return 'top ' + pinTop() + 'px'; },
-      end: function () { return '+=' + Math.round(window.innerHeight * (window.innerWidth <= 768 ? 1.6 : 2)); }, // 스크롤 거리
-      pin: true, scrub: 1, animation: deliverTl, invalidateOnRefresh: true, refreshPriority: 3.5,
+      end: function () { return '+=' + Math.round(deliverTl.duration() * window.innerHeight * pace() * 0.38); }, // 스크롤 거리 (PC 1080 기준 약 3000px)
+      pin: true, scrub: SVC_SCROLL.SCRUB, animation: deliverTl, invalidateOnRefresh: true, refreshPriority: 3.5,
       pinReparent: true, // 섹션 3 자체도 이후 덮기 전환으로 고정(transform 적용)되어, 고정 중에는 body 로 옮겨야 화면에 고정됨
       onUpdate: function (self) {
         var t = self.progress * deliverTl.duration() - CARD_START - 1; // 첫 박스가 다 나타난 시점부터
@@ -384,7 +395,7 @@ var SERVICE_DATA = {
       trigger: gallery, start: 'top bottom',
       end: function () { return 'bottom bottom-=' + getHold(); }, // 섹션 3 이 고정되어 머무는 구간까지 이동
       animation: gsap.fromTo(track, { x: 0 }, { x: function () { return -distance(); }, ease: 'none' }),
-      scrub: 0.6, invalidateOnRefresh: true, refreshPriority: 3,
+      scrub: SVC_SCROLL.SCRUB, invalidateOnRefresh: true, refreshPriority: 3,
       onUpdate: function (self) { updateBar(self.progress); },
       onRefresh: function (self) { updateBar(self.progress); }
     });
@@ -444,7 +455,7 @@ var SERVICE_DATA = {
     ScrollTrigger.create({
       trigger: proc, start: 'top top',
       end: function () { return '+=' + Math.round(procTl.duration() * window.innerHeight * pace()); },
-      animation: procTl, pin: true, scrub: 1, invalidateOnRefresh: true, refreshPriority: 1
+      animation: procTl, pin: true, scrub: SVC_SCROLL.SCRUB, invalidateOnRefresh: true, refreshPriority: 1
     });
   }
 })();
