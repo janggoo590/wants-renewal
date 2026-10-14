@@ -835,15 +835,19 @@ body::-webkit-scrollbar { display: none; width: 0; height: 0; } /* Chrome · Edg
 .vl-title .ln { display: block; width: fit-content; white-space: nowrap; }
 .vl-desc { margin-top: 26px; font-size: 16px; line-height: 1.75; color: #777; }
 .vl-thumb { display: none; }
-/* flex: none 대신 남는 폭을 정확히 채우도록(1 1 0) 해서, head(430px)+gap을 뺀 나머지 폭에 맞춰
-   카드 4장이 항상 꽉 차게 분배됨 → 어떤 해상도에서도 .ab-value 의 overflow:hidden 에 잘릴 일이 없음 */
-.vl-cards { position: relative; flex: 1 1 0; min-width: 0; display: flex; gap: 20px; }
+/* 카드 4장이 항상 화면 안에 모두 보이도록 :
+   - 오른쪽은 .inner 바깥 여백까지 써서 화면 끝 40px 까지 확장 (음수 margin)
+   - 기본은 시안 폭(266 / 318px), 공간이 모자랄 때만 같은 비율로 줄어듦 (묶음 폭 = 카드 합계 → JS 이미지 펼침과 일치) */
+.vl-cards {
+  position: relative; flex: 0 1 auto; min-width: 0; display: flex; gap: 20px;
+  margin-right: calc(-1 * max(0px, (100vw - var(--inner)) / 2));
+}
 .vl-cards li {
-  position: relative; overflow: hidden; flex: 1 1 0;
-  max-width: 318px; height: min(608px, 64vh); min-height: 420px;
+  position: relative; overflow: hidden; flex: 0 1 auto; min-width: 0;
+  width: 318px; height: min(608px, 64vh); min-height: 420px;
   background-color: var(--ph-2);
 }
-.vl-cards li:first-child { flex: 0.84 1 0; max-width: 266px; } /* 원래 비율(266:318)만큼 살짝 좁게 */
+.vl-cards li:first-child { width: 266px; }
 /* 4장의 카드가 하나의 사진을 나눠 보여주도록 (js/about.js 가 --off, --sw 지정) */
 .vl-img, .vl-thumb {
   background: var(--ph-2) url('../img/about_value_bg.jpg') center / cover no-repeat; /* 이미지를 넣으면 자동 적용 */
@@ -857,8 +861,8 @@ body::-webkit-scrollbar { display: none; width: 0; height: 0; } /* Chrome · Edg
 }
 .vl-txt strong { font-size: 44px; font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
 .vl-txt span {
-  padding: 9px 20px 10px; border-radius: 30px; background: #fff; max-width: 100%;
-  font-size: 15px; font-weight: 700; line-height: 1.2; color: #222; text-wrap: balance; /* 카드가 좁아져도 잘리지 않고 2줄로 고르게 줄바꿈 */
+  padding: 9px 20px 10px; border-radius: 30px; background: #fff;
+  font-size: 15px; font-weight: 700; line-height: 1.2; color: #222; white-space: nowrap; /* 시안처럼 한 줄 유지 */
 }
 
 /* ---------- 섹션 4 : CTA ---------- */
@@ -893,6 +897,15 @@ body::-webkit-scrollbar { display: none; width: 0; height: 0; } /* Chrome · Edg
   .pb-list h3 { font-size: 23px; }
   .pb-list p { margin-top: 10px; font-size: 14px; }
 }
+/* 섹션 3 : 좁은 PC 에서도 카드 4장이 모두 보이고 문구가 한 줄로 들어가도록 단계별 축소 */
+@media (min-width: 1025px) and (max-width: 1540px) {
+  .vl-head { width: 360px; }
+  .vl-title { font-size: 42px; }
+  .vl-cards { gap: 16px; }
+  .vl-cards li:first-child { width: 318px; } /* 좁은 화면에서는 4장 동일 폭 */
+  .vl-txt strong { font-size: 36px; }
+  .vl-txt span { font-size: 13px; padding: 8px 14px 9px; }
+}
 
 /* ---------- 반응형 ---------- */
 @media (max-width: 1400px) {
@@ -905,6 +918,17 @@ body::-webkit-scrollbar { display: none; width: 0; height: 0; } /* Chrome · Edg
   .vl-title { font-size: 42px; }
   .vl-txt strong { font-size: 36px; }
   .vl-txt span { font-size: 13px; padding: 8px 14px 9px; }
+}
+/* 섹션 3 : 1300px 이하 PC (위 1400px 규칙보다 뒤에 있어야 적용됨) */
+@media (min-width: 1025px) and (max-width: 1300px) {
+  .vl-stage { gap: 24px; }
+  .vl-head { width: 270px; }
+  .vl-title { font-size: 32px; }
+  .vl-desc { margin-top: 18px; font-size: 14px; }
+  .vl-cards { gap: 10px; margin-right: -20px; }
+  .vl-txt { gap: 18px; padding: 0 6px; }
+  .vl-txt strong { font-size: 26px; }
+  .vl-txt span { font-size: 11.5px; padding: 7px 8px 8px; }
 }
 @media (max-width: 1024px) {
   .ab-hero-title { font-size: 56px; }
