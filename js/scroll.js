@@ -5,6 +5,13 @@
    - CDN 로드 실패 / 모션 최소화 설정 시 main.js 의 기본 reveal 로 동작
    ========================================================= */
 (function () {
+  /* ---------- 0. 스크롤 호흡 설정 (전 페이지 공통 · FAQ 제외 · about.js / services.js 에서도 사용) ----------
+     실제 사용자는 휠을 빠르게 넘기므로, 연출이 순식간에 지나가지 않도록 구간을 늘리고 스크럽에 지연을 둠
+     - len   : 고정(Pin)·머무름 구간 길이 배율 (1 = 기존 길이)
+     - scrub : 스크롤 연동 지연(초) · 휠을 빠르게 내려도 애니메이션이 관성 있게 천천히 따라옴 (0 = 기존 값 유지) */
+  var isFaq = !!document.querySelector('.faq-list');
+  var TUNE = window.SCROLL_TUNE = isFaq ? { len: 1, scrub: 0 } : { len: 1.6, scrub: 1.5 };
+
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduceMotion || !window.gsap || !window.ScrollTrigger) return;
 
@@ -112,6 +119,12 @@
     }
   });
 
+  /* ---------- 4-1. FAQ 섹션 1 : 타이틀 → 서브 문구 → 설명 순서대로 아래에서 위로 등장 (페이지 진입 시) ---------- */
+  var faqIntro = gsap.utils.toArray('.faq-visual .inner > *');
+  if (faqIntro.length) {
+    gsap.from(faqIntro, { y: 60, autoAlpha: 0, duration: 1.1, ease: 'power3.out', stagger: 0.18, delay: 0.2 });
+  }
+
   var mm = gsap.matchMedia();
 
   /* ---------- 5. 섹션 1 → 2 → 3 → 4 : 고정(Pin) + 머무름 + 다음 섹션이 위로 덮으며 어두워지는 전환 ---------- */
@@ -124,7 +137,7 @@
   var stackOver = function (section, opts) {
     opts = opts || {};
     var ratio = opts.holdRatio || function () { return window.innerWidth <= 768 ? HOLD_MOBILE : HOLD_PC; };
-    var getHold = function () { return Math.round(window.innerHeight * ratio()); };
+    var getHold = function () { return Math.round(window.innerHeight * ratio() * TUNE.len); };
     var next = section.nextElementSibling; // 고정(pin) 전에 다음 섹션 확보
     // 화면보다 긴 섹션은 하단이 화면 하단에 닿을 때 고정 (내용이 잘리지 않도록)
     var anchor = function () { return section.offsetHeight > window.innerHeight ? 'bottom bottom' : 'top top'; };
@@ -140,7 +153,7 @@
       scrollTrigger: {
         trigger: section, start: anchor,
         end: function () { return '+=' + (getHold() + cover()); },
-        pin: true, pinSpacing: false, scrub: 1, invalidateOnRefresh: true
+        pin: true, pinSpacing: false, scrub: TUNE.scrub || 1, invalidateOnRefresh: true
       }
     })
       .to(proxy, { p: 1, ease: 'none', duration: hold, onUpdate: function () { if (opts.onHold) opts.onHold(proxy.p); } })
@@ -153,7 +166,7 @@
       stacks.splice(stacks.indexOf(stack), 1);
     };
   };
-  ['.main-hero', '.main-about'].forEach(function (sel) {
+  ['.main-hero', '.main-about', '.faq-visual'].forEach(function (sel) { // .faq-visual : FAQ 섹션 1 → 2 (메인 섹션 2 → 3 과 같은 전환)
     var section = document.querySelector(sel);
     if (section) stackOver(section);
   });
@@ -197,7 +210,7 @@
   if (aboutVisual) {
     gsap.fromTo(aboutVisual, { y: 120, rotate: -8 }, {
       y: -120, rotate: 8, ease: 'none',
-      scrollTrigger: { trigger: '.main-about', start: 'top bottom', end: 'bottom top', scrub: true }
+      scrollTrigger: { trigger: '.main-about', start: 'top bottom', end: 'bottom top', scrub: TUNE.scrub || true }
     });
   }
 
@@ -220,7 +233,7 @@
   if (serviceVisual) {
     gsap.fromTo(serviceVisual, { y: 150, scale: 0.85 }, {
       y: -100, scale: 1.05, ease: 'none',
-      scrollTrigger: { trigger: '.main-service', start: 'top bottom', end: 'bottom top', scrub: true }
+      scrollTrigger: { trigger: '.main-service', start: 'top bottom', end: 'bottom top', scrub: TUNE.scrub || true }
     });
   }
 
@@ -236,8 +249,8 @@
       var pfTl = gsap.timeline({
         scrollTrigger: {
           trigger: pfSection, start: 'center center',
-          end: function () { return '+=' + (distance() * 2.5 + window.innerHeight * 0.5); },
-          pin: true, scrub: 1, invalidateOnRefresh: true
+          end: function () { return '+=' + Math.round((distance() * 2.5 + window.innerHeight * 0.5) * TUNE.len); },
+          pin: true, scrub: TUNE.scrub || 1, invalidateOnRefresh: true
         }
       })
         .to({}, { duration: PF_PRE })
@@ -275,7 +288,7 @@
   gsap.utils.toArray('.main-cta').forEach(function (cta) {
     gsap.fromTo(cta, { clipPath: 'inset(0% 8% 0% 8% round 40px)' }, {
       clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none',
-      scrollTrigger: { trigger: cta, start: 'top bottom', end: 'top 30%', scrub: true }
+      scrollTrigger: { trigger: cta, start: 'top bottom', end: 'top 30%', scrub: TUNE.scrub || true }
     });
   });
 
@@ -284,7 +297,7 @@
   if (subVisual) {
     gsap.to(subVisual.children, {
       y: 80, autoAlpha: 0, ease: 'none',
-      scrollTrigger: { trigger: subVisual, start: 'top top', end: 'bottom top', scrub: true }
+      scrollTrigger: { trigger: subVisual, start: 'top top', end: 'bottom top', scrub: TUNE.scrub || true }
     });
   }
 

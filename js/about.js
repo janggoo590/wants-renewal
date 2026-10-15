@@ -21,14 +21,15 @@
      요소 하나가 등장하는 데 약 0.5화면, 큰 전환(확장·이동)에 약 1화면을 사용 */
   var PACE_PC = 1;
   var PACE_MOBILE = 0.8; // 모바일은 화면이 작아 같은 비율이면 길게 느껴지므로 조금 짧게
-  var pace = function () { return window.innerWidth <= 768 ? PACE_MOBILE : PACE_PC; };
+  var TUNE = window.SCROLL_TUNE || { len: 1, scrub: 0 }; // 스크롤 호흡 설정 (js/scroll.js 0번)
+  var pace = function () { return (window.innerWidth <= 768 ? PACE_MOBILE : PACE_PC) * TUNE.len; };
 
   // 타임라인 길이(화면 단위)만큼 섹션을 고정하고 스크롤에 연동
   var pinScrub = function (section, tl, priority, scrub) {
     return ScrollTrigger.create({
       trigger: section, start: 'top top',
       end: function () { return '+=' + Math.round(tl.duration() * window.innerHeight * pace()); },
-      animation: tl, pin: true, scrub: scrub || 1, invalidateOnRefresh: true, refreshPriority: priority
+      animation: tl, pin: true, scrub: scrub || TUNE.scrub || 1, invalidateOnRefresh: true, refreshPriority: priority
     });
   };
 
@@ -126,10 +127,10 @@
     setHeroGap();
     ScrollTrigger.addEventListener('refreshInit', setHeroGap);
 
-    // ① 연출 : 스크롤 진행률과 글자 수를 정확히 맞추기 위해 scrub: true (지연 없음)
+    // ① 연출 : 스크롤 진행률과 글자 수를 맞춤 (휠을 빠르게 내려도 지연을 두고 부드럽게 따라와 타이핑이 보이도록)
     ScrollTrigger.create({
       trigger: hero, start: 0, end: heroAnimLen,
-      animation: heroTl, scrub: true, invalidateOnRefresh: true, refreshPriority: 4
+      animation: heroTl, scrub: TUNE.scrub || true, invalidateOnRefresh: true, refreshPriority: 4
     });
     // ② 고정 : 연출 구간 + 섹션 2 가 화면을 다 덮을 때까지 (pinSpacing: false → 섹션 2 가 위로 겹쳐 올라옴)
     ScrollTrigger.create({
@@ -140,7 +141,7 @@
     gsap.timeline({
       scrollTrigger: {
         trigger: hero, start: heroAnimLen, end: function () { return heroAnimLen() + window.innerHeight; },
-        scrub: 1, invalidateOnRefresh: true, refreshPriority: 4
+        scrub: TUNE.scrub || 1, invalidateOnRefresh: true, refreshPriority: 4
       }
     })
       .fromTo(hero, { '--dim': 0 }, { '--dim': 0.9, ease: 'power1.in', duration: 1 }, 0)
@@ -292,7 +293,7 @@
       {
         clipPath: function () { return 'inset(0% 0% 0% 0% round ' + (parseFloat(getComputedStyle(ctaBox).borderTopLeftRadius) || 0) + 'px)'; }, // 박스 모서리(PC 30 / 모바일 20)와 같게
         y: 0, ease: 'power2.out',
-        scrollTrigger: { trigger: ctaBox, start: 'top 98%', end: 'center 55%', scrub: 1, invalidateOnRefresh: true }
+        scrollTrigger: { trigger: ctaBox, start: 'top 98%', end: 'center 55%', scrub: TUNE.scrub || 1, invalidateOnRefresh: true }
       });
     // 문구 : 박스가 거의 펼쳐졌을 때 아래에서 순차 등장 (위로 되돌아가면 다시 숨김)
     gsap.fromTo(ctaBox.children, { y: 30, autoAlpha: 0 }, {
