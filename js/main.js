@@ -384,6 +384,103 @@ document.addEventListener('DOMContentLoaded', function () {
     updateSubmit();
   }
 
+  /* ---------- Sub : Contact 업종 선택 (기본 select 팝업 대신 페이지 디자인에 맞춘 드롭다운) ----------
+     select 는 숨긴 채 값 전송 · 초기화용으로 유지하고, 버튼 + 목록을 만들어 값을 동기화
+     마우스 : 클릭 / 키보드 : ↑↓ 이동 · Enter·Space 선택 · Esc·Tab 닫기 */
+  document.querySelectorAll('.ct-form select').forEach(function (sel) {
+    var wrap = document.createElement('div');
+    wrap.className = 'ct-select';
+    sel.parentNode.insertBefore(wrap, sel);
+    wrap.appendChild(sel);
+    sel.tabIndex = -1;
+    sel.setAttribute('aria-hidden', 'true');
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'ct-select-btn';
+    btn.id = sel.id + 'Btn';
+    btn.setAttribute('aria-haspopup', 'listbox');
+    btn.setAttribute('aria-expanded', 'false');
+    var list = document.createElement('ul');
+    list.className = 'ct-select-list';
+    list.id = sel.id + 'List';
+    list.setAttribute('role', 'listbox');
+    btn.setAttribute('aria-controls', list.id);
+    var label = document.querySelector('label[for="' + sel.id + '"]');
+    if (label) { label.htmlFor = btn.id; label.id = label.id || sel.id + 'Label'; list.setAttribute('aria-labelledby', label.id); }
+
+    var placeholder = '';
+    var items = [];
+    Array.prototype.forEach.call(sel.options, function (opt) {
+      if (opt.value === '') { placeholder = opt.text; return; } // "선택해주세요" 는 목록에서 제외
+      var li = document.createElement('li');
+      li.setAttribute('role', 'option');
+      li.textContent = opt.text;
+      li._opt = opt;
+      list.appendChild(li);
+      items.push(li);
+    });
+    wrap.appendChild(btn);
+    wrap.appendChild(list);
+
+    var active = -1;
+    var setActive = function (i) {
+      active = i;
+      items.forEach(function (li, n) { li.classList.toggle('is-active', n === i); });
+    };
+    var sync = function () { // select 값 → 버튼 문구 · 선택 표시
+      var cur = sel.options[sel.selectedIndex];
+      var empty = !cur || cur.value === '';
+      btn.textContent = empty ? placeholder : cur.text;
+      btn.classList.toggle('is-empty', empty);
+      items.forEach(function (li) { li.setAttribute('aria-selected', li._opt === cur ? 'true' : 'false'); });
+    };
+    var open = function () {
+      wrap.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+      var sIdx = -1;
+      items.forEach(function (li, n) { if (li._opt.selected) sIdx = n; });
+      setActive(sIdx);
+    };
+    var close = function () {
+      wrap.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+      setActive(-1);
+    };
+    var choose = function (i) {
+      if (!items[i]) return;
+      items[i]._opt.selected = true;
+      sel.dispatchEvent(new Event('change', { bubbles: true })); // 신청 버튼 활성화 검사 등 기존 change 처리 유지
+      sync();
+      close();
+      btn.focus();
+    };
+
+    btn.addEventListener('click', function () { wrap.classList.contains('is-open') ? close() : open(); });
+    items.forEach(function (li, n) {
+      li.addEventListener('click', function () { choose(n); });
+      li.addEventListener('pointermove', function () { if (active !== n) setActive(n); });
+    });
+    btn.addEventListener('keydown', function (e) {
+      var isOpen = wrap.classList.contains('is-open');
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (!isOpen) { open(); if (active < 0) setActive(0); return; }
+        var next = active + (e.key === 'ArrowDown' ? 1 : -1);
+        setActive(Math.max(0, Math.min(items.length - 1, next)));
+      } else if ((e.key === 'Enter' || e.key === ' ') && isOpen && active > -1) {
+        e.preventDefault();
+        choose(active);
+      } else if (e.key === 'Escape' || e.key === 'Tab') {
+        close();
+      }
+    });
+    document.addEventListener('pointerdown', function (e) { if (!wrap.contains(e.target)) close(); });
+    sel.addEventListener('change', sync);
+    if (sel.form) sel.form.addEventListener('reset', function () { setTimeout(sync, 0); }); // 폼 초기화 후 문구 원복
+    sync();
+  });
+
   /* ---------- Sub : Contact 문의 내용 Tip (마우스를 올리면 안내 카드 페이드인 · 치우면 페이드아웃) ----------
      마우스 : hover / 키보드 : 포커스 / 터치 : 탭으로 열고 바깥을 탭하거나 Esc 로 닫기 */
   var tip = document.querySelector('.ct-tip');
