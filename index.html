@@ -96,15 +96,82 @@
         <!-- [포트폴리오 숨김] 추후 사용 시 주석 해제 : <a href="portfolio.html" class="btn-line dark reveal d2">PORTFOLIO <i class="arr"></i></a> -->
       </div>
       <div class="inner">
-        <!-- 작업 목록 : PC 는 줄에 올리면 사진이 커서를 따라옴 (js/scroll.js) · 모바일·태블릿은 썸네일 목록 -->
-        <!-- [포트폴리오 숨김] 추후 사용 시 주석 해제 : 각 줄 <a> 에 href="portfolio.html" 복구 -->
+        <!-- 작업 목록 : PC 는 줄에 올리면 사진이 커서를 따라옴 (js/scroll.js) · 모바일·태블릿은 썸네일 목록
+             줄을 클릭하면 상세 모달 (js/main.js) : 각 줄의 .pf-detail 내용을 모달에 표시
+             - 대표 이미지 : .pf-detail-img (권장 4:3)
+             - CLIENT : 진행 업체명
+             - PROJECT : <li> 로 형식 추가·삭제 (예 : 웹사이트 기획, 웹사이트 제작, 랜딩페이지, 상세페이지, 블로그 운영, 플레이스 관리,
+                         SNS 운영, 카드뉴스, 릴스·숏폼, 영상 촬영·편집, 검색광고, 퍼포먼스 광고, 브랜딩, 로고·BI, 사진 촬영 등)
+             - 링크 : 있을 때만 .pf-detail-link 추가 (없으면 줄 삭제) -->
+        <!-- [포트폴리오 숨김] 추후 사용 시 : 상세 모달 안에 portfolio.html 링크 추가 가능 -->
         <ul class="pf-list reveal d3">
-          <li><a><span class="pf-num">01</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf01.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">병원 홈페이지 리뉴얼</strong><span class="pf-tags">정보 구조 / 검색 기반 / 상담 전환</span><i class="arr"></i></a></li>
-          <li><a><span class="pf-num">02</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf02.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">병원 블로그 운영</strong><span class="pf-tags">키워드 / 정보형 콘텐츠 / 이미지</span><i class="arr"></i></a></li>
-          <li><a><span class="pf-num">03</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf03.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">지역 비즈니스 플레이스</strong><span class="pf-tags">소개 / 이미지 / 소식 / 전환</span><i class="arr"></i></a></li>
-          <li><a><span class="pf-num">04</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf04.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">브랜드 SNS 콘텐츠</strong><span class="pf-tags">피드 / 카드뉴스 / 릴스</span><i class="arr"></i></a></li>
-          <li><a><span class="pf-num">05</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf05.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">브랜드 홍보 영상</strong><span class="pf-tags">기획 / 촬영 / 숏폼 편집</span><i class="arr"></i></a></li>
-          <li><a><span class="pf-num">06</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf06.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">검색광고 퍼포먼스</strong><span class="pf-tags">키워드 / 랜딩 / 전환 분석</span><i class="arr"></i></a></li>
+          <li>
+            <button type="button" class="pf-row" aria-haspopup="dialog"><span class="pf-num">01</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf01.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">병원 홈페이지 리뉴얼</strong><span class="pf-tags">정보 구조 / 검색 기반 / 상담 전환</span><i class="arr"></i></button>
+            <div class="pf-detail" hidden>
+              <img class="pf-detail-img" src="img/pf/pf01_main.jpg" alt="병원 홈페이지 리뉴얼 완성 이미지" width="1200" height="900" loading="lazy">
+              <dl class="pf-detail-info">
+                <dt>CLIENT</dt><dd>OO병원</dd>
+                <dt>PROJECT</dt><dd><ul class="pf-type"><li>웹사이트 기획</li><li>웹사이트 제작</li><li>SEO 최적화</li></ul></dd>
+              </dl>
+              <p class="pf-detail-desc">진료 정보와 상담 동선을 다시 설계하고, 검색엔진이 이해하기 쉬운 구조로 홈페이지를 리뉴얼했습니다.</p>
+              <a class="pf-detail-link btn-line dark" href="#" target="_blank" rel="noopener">사이트 바로가기 <i class="arr"></i></a> <!-- TODO : 실제 주소로 교체 -->
+            </div>
+          </li>
+          <li>
+            <button type="button" class="pf-row" aria-haspopup="dialog"><span class="pf-num">02</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf02.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">병원 블로그 운영</strong><span class="pf-tags">키워드 / 정보형 콘텐츠 / 이미지</span><i class="arr"></i></button>
+            <div class="pf-detail" hidden>
+              <img class="pf-detail-img" src="img/pf/pf02_main.jpg" alt="병원 블로그 운영 완성 이미지" width="1200" height="900" loading="lazy">
+              <dl class="pf-detail-info">
+                <dt>CLIENT</dt><dd>OO병원</dd>
+                <dt>PROJECT</dt><dd><ul class="pf-type"><li>블로그 운영</li><li>키워드 분석</li><li>콘텐츠 기획</li></ul></dd>
+              </dl>
+              <p class="pf-detail-desc">환자가 실제로 검색하는 키워드를 기준으로 정보형 콘텐츠를 기획하고 꾸준히 운영했습니다.</p>
+            </div>
+          </li>
+          <li>
+            <button type="button" class="pf-row" aria-haspopup="dialog"><span class="pf-num">03</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf03.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">지역 비즈니스 플레이스</strong><span class="pf-tags">소개 / 이미지 / 소식 / 전환</span><i class="arr"></i></button>
+            <div class="pf-detail" hidden>
+              <img class="pf-detail-img" src="img/pf/pf03_main.jpg" alt="지역 비즈니스 플레이스 완성 이미지" width="1200" height="900" loading="lazy">
+              <dl class="pf-detail-info">
+                <dt>CLIENT</dt><dd>OO업체</dd>
+                <dt>PROJECT</dt><dd><ul class="pf-type"><li>플레이스 관리</li><li>사진 촬영</li><li>리뷰 관리</li></ul></dd>
+              </dl>
+              <p class="pf-detail-desc">플레이스 소개·이미지·소식을 정리해 지역 검색에서 선택받는 매장 정보를 만들었습니다.</p>
+            </div>
+          </li>
+          <li>
+            <button type="button" class="pf-row" aria-haspopup="dialog"><span class="pf-num">04</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf04.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">브랜드 SNS 콘텐츠</strong><span class="pf-tags">피드 / 카드뉴스 / 릴스</span><i class="arr"></i></button>
+            <div class="pf-detail" hidden>
+              <img class="pf-detail-img" src="img/pf/pf04_main.jpg" alt="브랜드 SNS 콘텐츠 완성 이미지" width="1200" height="900" loading="lazy">
+              <dl class="pf-detail-info">
+                <dt>CLIENT</dt><dd>OO브랜드</dd>
+                <dt>PROJECT</dt><dd><ul class="pf-type"><li>SNS 운영</li><li>카드뉴스</li><li>릴스·숏폼</li></ul></dd>
+              </dl>
+              <p class="pf-detail-desc">브랜드 톤에 맞춘 피드와 카드뉴스, 릴스를 제작해 SNS 채널을 운영했습니다.</p>
+            </div>
+          </li>
+          <li>
+            <button type="button" class="pf-row" aria-haspopup="dialog"><span class="pf-num">05</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf05.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">브랜드 홍보 영상</strong><span class="pf-tags">기획 / 촬영 / 숏폼 편집</span><i class="arr"></i></button>
+            <div class="pf-detail" hidden>
+              <img class="pf-detail-img" src="img/pf/pf05_main.jpg" alt="브랜드 홍보 영상 완성 이미지" width="1200" height="900" loading="lazy">
+              <dl class="pf-detail-info">
+                <dt>CLIENT</dt><dd>OO브랜드</dd>
+                <dt>PROJECT</dt><dd><ul class="pf-type"><li>영상 기획</li><li>영상 촬영</li><li>숏폼 편집</li></ul></dd>
+              </dl>
+              <p class="pf-detail-desc">브랜드 메시지를 담은 홍보 영상을 기획·촬영하고 채널별 숏폼으로 편집했습니다.</p>
+            </div>
+          </li>
+          <li>
+            <button type="button" class="pf-row" aria-haspopup="dialog"><span class="pf-num">06</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf06.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">검색광고 퍼포먼스</strong><span class="pf-tags">키워드 / 랜딩 / 전환 분석</span><i class="arr"></i></button>
+            <div class="pf-detail" hidden>
+              <img class="pf-detail-img" src="img/pf/pf06_main.jpg" alt="검색광고 퍼포먼스 완성 이미지" width="1200" height="900" loading="lazy">
+              <dl class="pf-detail-info">
+                <dt>CLIENT</dt><dd>OO업체</dd>
+                <dt>PROJECT</dt><dd><ul class="pf-type"><li>검색광고</li><li>랜딩페이지</li><li>전환 분석</li></ul></dd>
+              </dl>
+              <p class="pf-detail-desc">키워드 구조와 랜딩페이지를 함께 개선하고 전환 데이터를 기준으로 광고를 운영했습니다.</p>
+            </div>
+          </li>
         </ul>
       </div>
     </section>
@@ -203,6 +270,20 @@
       </div>
     </div>
   </footer>
+
+  <!-- 포트폴리오 상세 모달 (js/main.js) : 섹션 4 각 줄의 .pf-detail 내용을 복사해 표시 -->
+  <div class="pf-modal" id="pfModal" role="dialog" aria-modal="true" aria-labelledby="pfModalTitle" aria-hidden="true">
+    <div class="pf-modal-dim" data-pf-close></div>
+    <div class="pf-modal-box" data-lenis-prevent>
+      <button type="button" class="pf-modal-close" data-pf-close aria-label="닫기"></button>
+      <div class="pf-modal-media"></div>
+      <div class="pf-modal-info">
+        <span class="pf-modal-num"></span>
+        <h3 class="pf-modal-title" id="pfModalTitle"></h3>
+        <div class="pf-modal-body"></div>
+      </div>
+    </div>
+  </div>
 
   <button type="button" class="btn-top" aria-label="맨 위로">TOP</button>
 

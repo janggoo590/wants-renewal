@@ -239,7 +239,7 @@
 
   /* ---------- 8. 섹션 4 : 작업 목록 · 커서를 따라오는 사진 미리보기 (마우스 사용 PC) ---------- */
   var pfList = document.querySelector('.pf-list');
-  var pfLinks = pfList ? gsap.utils.toArray(pfList.querySelectorAll('li > a')) : [];
+  var pfLinks = pfList ? gsap.utils.toArray(pfList.querySelectorAll('.pf-row')) : [];
   if (pfList && pfLinks.length) {
     mm.add('(hover: hover) and (pointer: fine) and (min-width: 1025px)', function () {
       // 미리보기 박스 : 각 줄의 .pf-thumb img 경로를 읽어 사진을 세로로 쌓음

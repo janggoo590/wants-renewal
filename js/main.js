@@ -149,6 +149,80 @@ document.addEventListener('DOMContentLoaded', function () {
     lazyVideos.forEach(function (v) { videoIO.observe(v); });
   }
 
+  /* ---------- Main : Portfolio 상세 모달 ---------- */
+  // 섹션 4 각 줄을 클릭하면 같은 줄의 .pf-detail 내용을 복사해 공용 모달(#pfModal)에 표시
+  var pfModal = document.getElementById('pfModal');
+  var pfRows = document.querySelectorAll('.pf-list .pf-row');
+  if (pfModal && pfRows.length) {
+    var pfBox = pfModal.querySelector('.pf-modal-box');
+    var pfMedia = pfModal.querySelector('.pf-modal-media');
+    var pfNum = pfModal.querySelector('.pf-modal-num');
+    var pfTitle = pfModal.querySelector('.pf-modal-title');
+    var pfBody = pfModal.querySelector('.pf-modal-body');
+    var pfClose = pfModal.querySelector('.pf-modal-close');
+    var pfOpener = null;
+
+    function openPfModal(row) {
+      var detail = row.parentElement.querySelector('.pf-detail');
+      if (!detail) return;
+      var num = row.querySelector('.pf-num');
+      var name = row.querySelector('.pf-name');
+      pfNum.textContent = num ? num.textContent : '';
+      pfTitle.textContent = name ? name.textContent : '';
+      pfMedia.innerHTML = '';
+      pfBody.innerHTML = '';
+      // 대표 이미지는 왼쪽, 나머지(업체·프로젝트 형식·설명·링크)는 오른쪽
+      Array.prototype.forEach.call(detail.children, function (el) {
+        var clone = el.cloneNode(true);
+        if (clone.classList.contains('pf-detail-img')) {
+          clone.removeAttribute('loading');
+          pfMedia.appendChild(clone);
+        } else {
+          pfBody.appendChild(clone);
+        }
+      });
+      var hasMedia = !!pfMedia.children.length;
+      pfMedia.hidden = !hasMedia;
+      pfBox.classList.toggle('no-media', !hasMedia); // 이미지가 없으면 한 단으로
+
+      pfOpener = row;
+      pfModal.classList.add('is-open');
+      pfModal.setAttribute('aria-hidden', 'false');
+      document.documentElement.classList.add('pf-modal-open');
+      document.body.style.overflow = 'hidden';
+      if (window.lenis) window.lenis.stop();
+      pfBox.scrollTop = 0;
+      pfClose.focus();
+    }
+    function closePfModal() {
+      if (!pfModal.classList.contains('is-open')) return;
+      pfModal.classList.remove('is-open');
+      pfModal.setAttribute('aria-hidden', 'true');
+      document.documentElement.classList.remove('pf-modal-open');
+      document.body.style.overflow = '';
+      if (window.lenis) window.lenis.start();
+      if (pfOpener) pfOpener.focus({ preventScroll: true }); // 닫은 뒤 클릭했던 줄로 포커스 복귀
+    }
+
+    pfRows.forEach(function (row) {
+      row.addEventListener('click', function () { openPfModal(row); });
+    });
+    pfModal.querySelectorAll('[data-pf-close]').forEach(function (el) {
+      el.addEventListener('click', closePfModal);
+    });
+    // ESC 로 닫기 + Tab 이동을 모달 안에서만 순환
+    document.addEventListener('keydown', function (e) {
+      if (!pfModal.classList.contains('is-open')) return;
+      if (e.key === 'Escape') { closePfModal(); return; }
+      if (e.key !== 'Tab') return;
+      var focusables = pfBox.querySelectorAll('a[href], button');
+      var first = focusables[0];
+      var last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+  }
+
   /* ---------- Sub : Portfolio Filter ---------- */
   var filterBtns = document.querySelectorAll('.pf-filter button');
   filterBtns.forEach(function (btn) {
