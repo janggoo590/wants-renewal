@@ -24,7 +24,7 @@
         <ul>
           <li><a href="about.html">ABOUT</a></li>
           <li><a href="services.html">SERVICES</a></li>
-          <li><a href="portfolio.html">PORTFOLIO</a></li>
+          <!-- [포트폴리오 숨김] 추후 사용 시 주석 해제 : <li><a href="portfolio.html">PORTFOLIO</a></li> -->
           <li><a href="faq.html">FAQ</a></li>
           <li><a href="contact.html">CONTACT</a></li>
         </ul>
@@ -45,7 +45,7 @@
         <p class="hero-desc reveal d2">홈페이지, 블로그, 플레이스, SNS, 영상, 검색광고. <br>각각 따로 운영하지 않고 검색부터 AI 답변까지 연결되는 하나의 브랜드 구조로 만듭니다.</p>
         <div class="hero-btns reveal d3">
           <a href="services.html" class="btn-line white">우리가 하는 일</a>
-          <a href="portfolio.html" class="btn-line white">포트폴리오</a>
+          <!-- [포트폴리오 숨김] 추후 사용 시 주석 해제 : <a href="portfolio.html" class="btn-line white">포트폴리오</a> -->
         </div>
       </div>
     </section>
@@ -93,27 +93,19 @@
         <span class="sec-label reveal">SELECTED WORK</span>
         <h2 class="sec-title reveal d1">말이 아닌 결과로 증명하는<br>브랜드 성장 기록</h2>
         <p class="sec-desc reveal d2">우리는 매체나 포스팅 수량을 파는 대행사가 아닙니다. 브랜드의 본질적인 강점을 정리하고, <br>검색엔진부터 AI까지 자연스럽게 연결되는 마케팅 구조를 만듭니다.</p>
-        <a href="portfolio.html" class="btn-line dark reveal d2">PORTFOLIO <i class="arr"></i></a>
+        <!-- [포트폴리오 숨김] 추후 사용 시 주석 해제 : <a href="portfolio.html" class="btn-line dark reveal d2">PORTFOLIO <i class="arr"></i></a> -->
       </div>
-      <div class="pf-slider reveal d3">
-        <div class="inner">
-          <div class="pf-viewport">
-            <ul class="pf-track">
-              <li class="pf-item"><a href="portfolio.html"><div class="thumb"></div><strong>병원 홈페이지 리뉴얼</strong><span>정보 구조 / 검색 기반 / 상담 전환</span></a></li>
-              <li class="pf-item"><a href="portfolio.html"><div class="thumb"></div><strong>병원 블로그 운영</strong><span>키워드 / 정보형 콘텐츠 / 이미지</span></a></li>
-              <li class="pf-item"><a href="portfolio.html"><div class="thumb"></div><strong>지역 비즈니스 플레이스</strong><span>소개 / 이미지 / 소식 / 전환</span></a></li>
-              <li class="pf-item"><a href="portfolio.html"><div class="thumb"></div><strong>브랜드 SNS 콘텐츠</strong><span>피드 / 카드뉴스 / 릴스</span></a></li>
-              <li class="pf-item"><a href="portfolio.html"><div class="thumb"></div><strong>브랜드 홍보 영상</strong><span>기획 / 촬영 / 숏폼 편집</span></a></li>
-              <li class="pf-item"><a href="portfolio.html"><div class="thumb"></div><strong>검색광고 퍼포먼스</strong><span>키워드 / 랜딩 / 전환 분석</span></a></li>
-            </ul>
-          </div>
-          <!-- 스크롤 바 : 카드 이동 위치 표시 + 드래그로 이동 (js/main.js) -->
-          <div class="pf-bar" aria-hidden="true"><span class="pf-bar-thumb"></span></div>
-          <div class="pf-ctrl">
-            <button type="button" class="prev" aria-label="이전 포트폴리오"><i class="arr"></i></button>
-            <button type="button" class="next" aria-label="다음 포트폴리오"><i class="arr"></i></button>
-          </div>
-        </div>
+      <div class="inner">
+        <!-- 작업 목록 : PC 는 줄에 올리면 사진이 커서를 따라옴 (js/scroll.js) · 모바일·태블릿은 썸네일 목록 -->
+        <!-- [포트폴리오 숨김] 추후 사용 시 주석 해제 : 각 줄 <a> 에 href="portfolio.html" 복구 -->
+        <ul class="pf-list reveal d3">
+          <li><a><span class="pf-num">01</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf01.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">병원 홈페이지 리뉴얼</strong><span class="pf-tags">정보 구조 / 검색 기반 / 상담 전환</span><i class="arr"></i></a></li>
+          <li><a><span class="pf-num">02</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf02.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">병원 블로그 운영</strong><span class="pf-tags">키워드 / 정보형 콘텐츠 / 이미지</span><i class="arr"></i></a></li>
+          <li><a><span class="pf-num">03</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf03.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">지역 비즈니스 플레이스</strong><span class="pf-tags">소개 / 이미지 / 소식 / 전환</span><i class="arr"></i></a></li>
+          <li><a><span class="pf-num">04</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf04.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">브랜드 SNS 콘텐츠</strong><span class="pf-tags">피드 / 카드뉴스 / 릴스</span><i class="arr"></i></a></li>
+          <li><a><span class="pf-num">05</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf05.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">브랜드 홍보 영상</strong><span class="pf-tags">기획 / 촬영 / 숏폼 편집</span><i class="arr"></i></a></li>
+          <li><a><span class="pf-num">06</span><span class="pf-thumb" aria-hidden="true"><img src="img/pf/pf06.jpg" alt="" width="800" height="600" loading="lazy"></span><strong class="pf-name">검색광고 퍼포먼스</strong><span class="pf-tags">키워드 / 랜딩 / 전환 분석</span><i class="arr"></i></a></li>
+        </ul>
       </div>
     </section>
 
@@ -172,7 +164,7 @@
         <ul class="ft-menu">
           <li><a href="about.html">ABOUT</a></li>
           <li><a href="services.html">SERVICES</a></li>
-          <li><a href="portfolio.html">PORTFOLIO</a></li>
+          <!-- [포트폴리오 숨김] 추후 사용 시 주석 해제 : <li><a href="portfolio.html">PORTFOLIO</a></li> -->
           <li><a href="faq.html">FAQ</a></li>
           <li><a href="contact.html">CONTACT</a></li>
         </ul>

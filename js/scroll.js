@@ -237,34 +237,89 @@
     });
   }
 
-  /* ---------- 8. 섹션 4 : 포트폴리오 고정 + 가로 스크롤 (PC) ---------- */
-  var pfSection = document.querySelector('.main-portfolio');
-  var pfViewport = document.querySelector('.pf-viewport');
-  if (pfSection && pfViewport) {
-    mm.add('(min-width: 1025px)', function () {
-      pfSection.classList.add('is-scrub');
-      var distance = function () { return pfViewport.scrollWidth - pfViewport.clientWidth; };
-      // 시작 전 잠깐 머무름(0.2) → 가로 이동(1) → 마지막 카드에서 머무름(0.3)
-      var PF_PRE = 0.2, PF_MOVE = 1, PF_POST = 0.3;
-      var pfTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: pfSection, start: 'center center',
-          end: function () { return '+=' + Math.round((distance() * 2.5 + window.innerHeight * 0.5) * TUNE.len); },
-          pin: true, scrub: TUNE.scrub || 1, invalidateOnRefresh: true
-        }
-      })
-        .to({}, { duration: PF_PRE })
-        .to(pfViewport, { scrollLeft: distance, ease: 'none', duration: PF_MOVE })
-        .to({}, { duration: PF_POST });
-      // 드래그 시 스크롤 위치와 동기화하기 위해 main.js 에 전달 (가로 이동 구간 기준 비율)
-      pfViewport._pfScrub = {
-        st: pfTl.scrollTrigger, distance: distance,
-        ratio: function () {
-          var st = pfTl.scrollTrigger;
-          return (st.end - st.start) * (PF_MOVE / (PF_PRE + PF_MOVE + PF_POST)) / (distance() || 1);
-        }
+  /* ---------- 8. 섹션 4 : 작업 목록 · 커서를 따라오는 사진 미리보기 (마우스 사용 PC) ---------- */
+  var pfList = document.querySelector('.pf-list');
+  var pfLinks = pfList ? gsap.utils.toArray(pfList.querySelectorAll('li > a')) : [];
+  if (pfList && pfLinks.length) {
+    mm.add('(hover: hover) and (pointer: fine) and (min-width: 1025px)', function () {
+      // 미리보기 박스 : 각 줄의 .pf-thumb img 경로를 읽어 사진을 세로로 쌓음
+      var preview = document.createElement('div');
+      preview.className = 'pf-preview';
+      preview.setAttribute('aria-hidden', 'true');
+      var pvTrack = document.createElement('div');
+      pvTrack.className = 'pf-preview-track';
+      pfLinks.forEach(function (a) {
+        var thumb = a.querySelector('.pf-thumb img');
+        var img = document.createElement('img');
+        img.alt = '';
+        img.decoding = 'async';
+        if (thumb) img.src = thumb.getAttribute('src');
+        pvTrack.appendChild(img);
+      });
+      preview.appendChild(pvTrack);
+      document.body.appendChild(preview);
+      gsap.set(preview, { xPercent: -50, yPercent: -50, scale: 0.5, autoAlpha: 0 }); // 커서 중심 정렬
+
+      // 커서를 살짝 늦게 따라옴 + 가로 이동 속도만큼 기울기
+      var xTo = gsap.quickTo(preview, 'x', { duration: 0.6, ease: 'power3' });
+      var yTo = gsap.quickTo(preview, 'y', { duration: 0.6, ease: 'power3' });
+      var rTo = gsap.quickTo(preview, 'rotation', { duration: 0.6, ease: 'power3' });
+      var shown = false, current = -1, lastX = 0, settle = null;
+
+      // n 번째 줄 사진으로 : 트랙을 세로로 이동 (처음 나타날 때는 바로 해당 사진)
+      var setIndex = function (idx, instant) {
+        if (idx === current) return;
+        current = idx;
+        gsap.to(pvTrack, { yPercent: -100 * idx, duration: instant ? 0 : 0.6, ease: 'power3.inOut', overwrite: true });
       };
-      return function () { pfSection.classList.remove('is-scrub'); pfViewport.scrollLeft = 0; delete pfViewport._pfScrub; };
+      var show = function (e) {
+        shown = true;
+        lastX = e.clientX;
+        xTo(e.clientX, e.clientX); // 시작값 지정 : 0,0 에서 날아오지 않고 그 자리에서 나타남
+        yTo(e.clientY, e.clientY);
+        rTo(0, 0);
+        document.documentElement.classList.add('pf-hovering');
+        gsap.to(preview, { scale: 1, autoAlpha: 1, duration: 0.5, ease: 'power3.out', overwrite: 'auto' });
+      };
+      var hide = function () {
+        if (!shown) return;
+        shown = false;
+        current = -1;
+        if (settle) settle.kill();
+        rTo(0);
+        document.documentElement.classList.remove('pf-hovering');
+        gsap.to(preview, { scale: 0.5, autoAlpha: 0, duration: 0.4, ease: 'power3.out', overwrite: 'auto' });
+      };
+      var onEnter = function (e) {
+        var first = !shown;
+        if (first) show(e);
+        setIndex(pfLinks.indexOf(e.currentTarget), first);
+      };
+      var onMove = function (e) {
+        if (!shown) return;
+        xTo(e.clientX);
+        yTo(e.clientY);
+        // 가로 속도 → 최대 ±8도 · 움직임이 멈추면 0도로 복귀
+        rTo(gsap.utils.clamp(-8, 8, (e.clientX - lastX) * 0.4));
+        lastX = e.clientX;
+        if (settle) settle.kill();
+        settle = gsap.delayedCall(0.1, function () { rTo(0); });
+      };
+
+      pfLinks.forEach(function (a) { a.addEventListener('mouseenter', onEnter); });
+      pfList.addEventListener('mouseleave', hide);
+      window.addEventListener('mousemove', onMove);
+
+      // 해제(화면 크기·입력 환경 변경) 시 정리
+      return function () {
+        pfLinks.forEach(function (a) { a.removeEventListener('mouseenter', onEnter); });
+        pfList.removeEventListener('mouseleave', hide);
+        window.removeEventListener('mousemove', onMove);
+        if (settle) settle.kill();
+        gsap.killTweensOf([preview, pvTrack]);
+        preview.remove();
+        document.documentElement.classList.remove('pf-hovering');
+      };
     });
   }
 
