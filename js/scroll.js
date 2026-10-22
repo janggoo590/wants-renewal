@@ -242,19 +242,66 @@
   var pfLinks = pfList ? gsap.utils.toArray(pfList.querySelectorAll('.pf-row')) : [];
   if (pfList && pfLinks.length) {
     mm.add('(hover: hover) and (pointer: fine) and (min-width: 1025px)', function () {
-      // 미리보기 박스 : 각 줄의 .pf-thumb img 경로를 읽어 사진을 세로로 쌓음
+      // 미리보기 후보 : 각 줄(카테고리)의 .pf-works 데이터 (모달과 같은 데이터) → web 은 image, video 는 poster
+      var pvStatus = {}; // 경로별 불러오기 상태 : 'loading' · 'ok' · 'error' (실패한 경로는 후보에서 제외)
+      var pvLast = [];   // 줄별 직전에 보여준 경로 (다시 올렸을 때 제외)
+      var pvSources = pfLinks.map(function (a) {
+        var json = a.parentElement.querySelector('script.pf-works');
+        var data = {};
+        try { data = JSON.parse(json ? json.textContent : '{}') || {}; } catch (err) { data = {}; }
+        var key = data.type === 'video' ? 'poster' : 'image';
+        return (Array.isArray(data.works) ? data.works : [])
+          .map(function (w) { return w && w[key]; })
+          .filter(function (src) { return typeof src === 'string' && src; });
+      });
+      // 미리 불러오기 : 목록이 화면에 가까워지면 한 번 (이미지가 바뀔 때 깜빡임 방지)
+      var preloaded = false;
+      var preload = function () {
+        if (preloaded) return;
+        preloaded = true;
+        pvSources.forEach(function (list) {
+          list.forEach(function (src) {
+            if (pvStatus[src]) return;
+            pvStatus[src] = 'loading';
+            var im = new Image();
+            im.onload = function () { pvStatus[src] = 'ok'; };
+            im.onerror = function () { pvStatus[src] = 'error'; };
+            im.src = src;
+          });
+        });
+      };
+      var pvIO = null;
+      if ('IntersectionObserver' in window) {
+        pvIO = new IntersectionObserver(function (entries) {
+          if (!entries.some(function (en) { return en.isIntersecting; })) return;
+          preload();
+          pvIO.disconnect();
+        }, { rootMargin: '800px 0px' });
+        pvIO.observe(pfList);
+      } else {
+        preload();
+      }
+      // n 번째 줄에서 랜덤 1장 : 실패한 이미지 제외 · 2장 이상이면 직전 이미지 제외 / 없으면 ''
+      var pickSrc = function (idx) {
+        var list = pvSources[idx].filter(function (src) { return pvStatus[src] !== 'error'; });
+        if (list.length > 1) list = list.filter(function (src) { return src !== pvLast[idx]; });
+        if (!list.length) return '';
+        pvLast[idx] = list[Math.floor(Math.random() * list.length)];
+        return pvLast[idx];
+      };
+
+      // 미리보기 박스 : 줄마다 사진 칸을 세로로 쌓음 (사진은 줄에 올릴 때 pickSrc 로 채움)
       var preview = document.createElement('div');
       preview.className = 'pf-preview';
       preview.setAttribute('aria-hidden', 'true');
       var pvTrack = document.createElement('div');
       pvTrack.className = 'pf-preview-track';
-      pfLinks.forEach(function (a) {
-        var thumb = a.querySelector('.pf-thumb img');
+      var pvSlots = pfLinks.map(function () {
         var img = document.createElement('img');
         img.alt = '';
         img.decoding = 'async';
-        if (thumb) img.src = thumb.getAttribute('src');
         pvTrack.appendChild(img);
+        return img;
       });
       preview.appendChild(pvTrack);
       document.body.appendChild(preview);
@@ -291,9 +338,14 @@
         gsap.to(preview, { scale: 0.5, autoAlpha: 0, duration: 0.4, ease: 'power3.out', overwrite: 'auto' });
       };
       var onEnter = function (e) {
+        var idx = pfLinks.indexOf(e.currentTarget);
+        preload(); // 미리 불러오기 전에 올린 경우 대비
+        var src = pickSrc(idx); // 들어오는 순간 한 번만 선택 (줄 안에서 움직이는 동안은 유지)
+        if (!src) { hide(); return; } // 표시할 이미지가 없는 카테고리는 미리보기 없음
+        pvSlots[idx].src = src;
         var first = !shown;
         if (first) show(e);
-        setIndex(pfLinks.indexOf(e.currentTarget), first);
+        setIndex(idx, first);
       };
       var onMove = function (e) {
         if (!shown) return;
@@ -316,6 +368,7 @@
         pfList.removeEventListener('mouseleave', hide);
         window.removeEventListener('mousemove', onMove);
         if (settle) settle.kill();
+        if (pvIO) pvIO.disconnect();
         gsap.killTweensOf([preview, pvTrack]);
         preview.remove();
         document.documentElement.classList.remove('pf-hovering');
